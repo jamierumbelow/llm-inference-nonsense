@@ -9,9 +9,7 @@ Weights land in $HF_HOME (set in mise.toml), never in the repo. Both models
 are gated: accept the licence on the model page, then `uv run hf auth login`
 or export HF_TOKEN.
 
-Only the safetensors weights and tokenizer/config files are fetched. The
-`original/` directory in each repo holds the same weights as consolidated
-PyTorch checkpoints and would double the download.
+Only the files listed in `harness.profiles.CHECKPOINT_FILES` are fetched.
 """
 
 from __future__ import annotations
@@ -23,17 +21,7 @@ from pathlib import Path
 from huggingface_hub import get_token, snapshot_download
 from huggingface_hub.errors import GatedRepoError, RepositoryNotFoundError
 
-from harness.profiles import PROFILES, get_profile
-
-ALLOW_PATTERNS = [
-    "*.safetensors",
-    "*.safetensors.index.json",
-    "config.json",
-    "generation_config.json",
-    "tokenizer.json",
-    "tokenizer_config.json",
-    "special_tokens_map.json",
-]
+from harness.profiles import CHECKPOINT_FILES, PROFILES, get_profile
 
 
 def dir_size_gb(path: Path) -> float:
@@ -45,7 +33,7 @@ def download(profile: str) -> Path:
     repo_id = get_profile(profile).repo_id
     print(f"{profile}: {repo_id}")
     try:
-        path = Path(snapshot_download(repo_id, allow_patterns=ALLOW_PATTERNS))
+        path = Path(snapshot_download(repo_id, allow_patterns=CHECKPOINT_FILES))
     except GatedRepoError:
         sys.exit(
             f"{repo_id} is gated. Accept the licence at https://huggingface.co/{repo_id} "

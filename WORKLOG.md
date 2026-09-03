@@ -11,4 +11,5 @@ _All datetimes in PST. Written manually by Jamie._
 * 22:25 - claude one-shotted the download script, looks sensible. but i need to apply for access to the models themselves, so while that's pending I can do other things
 * 22:28 - moved the profiles into the new harness package since i'll want to re-use them later. the fact that python's docstrings sit underneath the property definition is troubling.
 * 22:32 - access approved! running the download script. next up is to get the model running. i'll start a setup phase notebook, import transfomers, and have a play.
-* 22:42 - my goodness transformers makes things easy. okay. let's move some of this setup code into the harness. i want to implement as much of this as is feasible/not distracting, so we'll get the config setup in python (rather than relying on the one we donwloaded from HF) and define the model in pytorch directly.
+* 22:42 - my goodness `transformers` makes things easy. okay. let's move some of this setup code into the harness. i want to implement as much of this as is feasible/not distracting, so we'll get the config setup in python (rather than relying on the one we donwloaded from HF) and define the model in pytorch directly.
+* 22:52 - added a config file to the harness package so we can define the architecture and various hyperparameters on a per-model basis. next up is the model itself

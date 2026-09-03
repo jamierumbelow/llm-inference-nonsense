@@ -15,6 +15,7 @@ dev = [
     "pyright",
     "marimo",
     "transformers",
+    "torch>=2.14.0",
 ]
 
 [tool.uv.workspace]
@@ -37,6 +38,10 @@ select = [
     "SIM",      # simplify
     "RUF",      # ruff-specific
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# A bare expression at the end of a marimo cell is how the cell displays it.
+"notebooks/*" = ["B018"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["harness", "bench", "analysis"]
