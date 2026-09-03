@@ -1,0 +1,12 @@
+[project]
+name = "harness"
+version = "0.0.0"
+description = "shared runtime"
+requires-python = ">=3.13"
+dependencies = [
+    "huggingface_hub",
+]
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"

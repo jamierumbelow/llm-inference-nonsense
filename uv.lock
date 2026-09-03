@@ -2,6 +2,12 @@ version = 1
 revision = 3
 requires-python = ">=3.13"
 
+[manifest]
+members = [
+    "harness",
+    "llm-inference-nonsense",
+]
+
 [[package]]
 name = "annotated-doc"
 version = "0.0.5"
@@ -161,6 +167,17 @@ wheels = [
 ]
 
 [[package]]
+name = "harness"
+version = "0.0.0"
+source = { editable = "packages/harness" }
+dependencies = [
+    { name = "huggingface-hub" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "huggingface-hub" }]
+
+[[package]]
 name = "hf-xet"
 version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -275,10 +292,12 @@ wheels = [
 name = "llm-inference-nonsense"
 version = "0.0.0"
 source = { virtual = "." }
+dependencies = [
+    { name = "harness" },
+]
 
 [package.dev-dependencies]
 dev = [
-    { name = "huggingface-hub" },
     { name = "marimo" },
     { name = "pyright" },
     { name = "pytest" },
@@ -287,10 +306,10 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "harness", editable = "packages/harness" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "huggingface-hub", specifier = ">=1.29.0" },
     { name = "marimo" },
     { name = "pyright" },
     { name = "pytest", specifier = ">=9" },

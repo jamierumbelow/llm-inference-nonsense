@@ -3,6 +3,10 @@ name = "llm-inference-nonsense"
 version = "0.0.0"
 description = "A repo where I learn about LLM inference"
 requires-python = ">=3.13"
+# Workspace members, so a plain `uv sync` installs all of them editable.
+dependencies = [
+    "harness",
+]
 
 [dependency-groups]
 dev = [
@@ -11,7 +15,6 @@ dev = [
     "pyright",
     "marimo",
     "transformers",
-    "huggingface-hub>=1.29.0",
 ]
 
 [tool.uv.workspace]
@@ -34,6 +37,9 @@ select = [
     "SIM",      # simplify
     "RUF",      # ruff-specific
 ]
+
+[tool.ruff.lint.isort]
+known-first-party = ["harness", "bench", "analysis"]
 
 [tool.pyright]
 pythonVersion = "3.13"

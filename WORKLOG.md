@@ -9,3 +9,4 @@ _All datetimes in PST. Written manually by Jamie._
 * 22:14 - also want typing, Jessica says that pyright handles torch / tensor ops better, so pyright it is
 * 22:19 - okay next we need to download the model. will start with Llama 3.2 1B which I can run locally, will benchmark on 3.1 8B later. https://huggingface.co/docs/huggingface_hub/en/index.
 * 22:25 - claude one-shotted the download script, looks sensible. but i need to apply for access to the models themselves, so while that's pending I can do other things
+* 22:28 - moved the profiles into the new harness package since i'll want to re-use them later. the fact that python's docstrings sit underneath the property definition is troubling.

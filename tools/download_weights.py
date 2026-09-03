@@ -23,12 +23,7 @@ from pathlib import Path
 from huggingface_hub import get_token, snapshot_download
 from huggingface_hub.errors import GatedRepoError, RepositoryNotFoundError
 
-# TODO: move to harness.profiles once the harness package exists, and import
-# from there so there is one source of truth.
-PROFILES: dict[str, str] = {
-    "dev": "meta-llama/Llama-3.2-1B-Instruct",
-    "target": "meta-llama/Llama-3.1-8B-Instruct",
-}
+from harness.profiles import PROFILES, get_profile
 
 ALLOW_PATTERNS = [
     "*.safetensors",
@@ -47,7 +42,7 @@ def dir_size_gb(path: Path) -> float:
 
 
 def download(profile: str) -> Path:
-    repo_id = PROFILES[profile]
+    repo_id = get_profile(profile).repo_id
     print(f"{profile}: {repo_id}")
     try:
         path = Path(snapshot_download(repo_id, allow_patterns=ALLOW_PATTERNS))
@@ -69,8 +64,8 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.list or not args.profiles:
-        for name, repo_id in PROFILES.items():
-            print(f"{name:8} {repo_id}")
+        for name, p in PROFILES.items():
+            print(f"{name:8} {p.repo_id}")
         return
 
     if get_token() is None:
