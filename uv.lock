@@ -245,10 +245,16 @@ version = "0.0.0"
 source = { editable = "packages/harness" }
 dependencies = [
     { name = "huggingface-hub" },
+    { name = "safetensors" },
+    { name = "torch" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "huggingface-hub" }]
+requires-dist = [
+    { name = "huggingface-hub" },
+    { name = "safetensors", specifier = ">=0.8.0" },
+    { name = "torch", specifier = ">=2.14.0" },
+]
 
 [[package]]
 name = "hf-xet"
@@ -387,7 +393,6 @@ dev = [
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },
-    { name = "torch" },
     { name = "transformers" },
 ]
 
@@ -400,7 +405,6 @@ dev = [
     { name = "pyright" },
     { name = "pytest", specifier = ">=9" },
     { name = "ruff" },
-    { name = "torch", specifier = ">=2.14.0" },
     { name = "transformers" },
 ]
 

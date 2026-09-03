@@ -5,6 +5,8 @@ description = "shared runtime"
 requires-python = ">=3.13"
 dependencies = [
     "huggingface_hub",
+    "safetensors>=0.8.0",
+    "torch>=2.14.0",
 ]
 
 [build-system]

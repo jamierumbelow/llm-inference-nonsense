@@ -15,7 +15,6 @@ dev = [
     "pyright",
     "marimo",
     "transformers",
-    "torch>=2.14.0",
 ]
 
 [tool.uv.workspace]
