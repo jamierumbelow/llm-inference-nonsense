@@ -1,0 +1,49 @@
+[project]
+name = "llm-inference-nonsense"
+version = "0.0.0"
+description = "A repo where I learn about LLM inference"
+requires-python = ">=3.13"
+
+[dependency-groups]
+dev = [
+    "pytest>=9",
+    "ruff",
+    "pyright",
+    "marimo",
+    "transformers",
+]
+
+[tool.uv.workspace]
+members = ["packages/*", "experiments/*"]
+
+[tool.uv.sources]
+harness = { workspace = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "UP",       # pyupgrade
+    "B",        # bugbear
+    "SIM",      # simplify
+    "RUF",      # ruff-specific
+]
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "basic"
+include = ["packages", "experiments", "tools"]
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["packages", "experiments"]
+addopts = "-ra -m 'not slow'"
+markers = [
+    "slow: needs model weights on disk; run with `-m slow` or `-m ''`",
+]
