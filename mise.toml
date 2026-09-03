@@ -1,0 +1,7 @@
+[tools]
+python = "3.13.15"
+uv = "0.12.9"
+
+[env]
+# keep model weights out of the repo
+HF_HOME = "{{ env.HOME }}/.cache/huggingface"
