@@ -8,3 +8,6 @@ The purpose of this repo is to learn about how LLM inference works, from the bar
 
 To do this, I'll build much of the framework, inference engine, and perform the analysis myself. It's 2026, so most of the code itself will be written by Claude or Codex, but I'll be editing it manually, adding comments, and, always, writing the prose around it (including this docs).
 
+
+## Documentation
+
