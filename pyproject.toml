@@ -11,6 +11,7 @@ dev = [
     "pyright",
     "marimo",
     "transformers",
+    "huggingface-hub>=1.29.0",
 ]
 
 [tool.uv.workspace]

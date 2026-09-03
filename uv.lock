@@ -278,6 +278,7 @@ source = { virtual = "." }
 
 [package.dev-dependencies]
 dev = [
+    { name = "huggingface-hub" },
     { name = "marimo" },
     { name = "pyright" },
     { name = "pytest" },
@@ -289,6 +290,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "huggingface-hub", specifier = ">=1.29.0" },
     { name = "marimo" },
     { name = "pyright" },
     { name = "pytest", specifier = ">=9" },
