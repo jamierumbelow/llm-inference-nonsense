@@ -31,4 +31,22 @@ packages/harness/tests/test_model.py ..                                         
 ============================================== 3 passed, 6 deselected in 15.08s ===============================================
 ```
 
-it works! i simplified the model.py file a little by swapping out the `RMSNorm` implementation claude did for me with `torch.nn.RMSNorm`. the bulk of it is defining the RoPe positional encoding and the attention mechanism; the rest is a straightforward pytorch model and a wrapper that projects the model output to logits. the test first runs the wrapped-model via `AutoModelForCausalLM` 
+it works! i simplified the model.py file a little by swapping out the `RMSNorm` implementation claude did for me with `torch.nn.RMSNorm`. the bulk of it is defining the RoPe positional encoding and the attention mechanism; the rest is a straightforward pytorch model and a wrapper that projects the model output to logits. the test first runs the snapshot model via `AutoModelForCausalLM`, then runs our model, and checks that the logits are the same.
+
+a few worries/things to check/clarifications:
+- we are testing that the logits are identical bit-for-bit in fp32 (which runs on my cpu locally) but the model ships from HF in bf16 and we'll run it in bf16 on the GPU when we get to that point (bf16 means the 1B model will weigh 2.5GB rather than 5GB; the 8B model will weigh 16GB rather than 32GB). I will likely run this on an A100 40GB so the extra headroom will be useful.
+- should probably note that the RoPe implementation is using fp32 too. apparently it's very normal to mix precision like this (use higher precision where you don't want any rounding errors, use lower precision for the model machinery itself) but I should explore this in a bit more detail when I get to the quantisation experiment
+- should also probably note that bf16 and fp16 are in fact different and we should target bf16: same exponent range as fp32, no overflow worries like with fp16. i'll do that next, or certainly avoid using the local environment to get benchmarking numbers.
+
+* 23:28 - next up:
+    * run the current setup using bf16, figure out what correct means if rounding is going to complicate the picture
+    * get access to 8B
+    * run the 8B model through the harness, check for correctness with:
+        - tensor sharding
+        - not tying the input and output heads (this is the main structural difference between 1B and 8B)
+        - difference in head dimensions (128 vs 64), RoPe scaling factor
+    * run on the GPU and get some baseline numbers
+    * write the first experiment in the plan
+
+but for now it's bedtime.
+    
