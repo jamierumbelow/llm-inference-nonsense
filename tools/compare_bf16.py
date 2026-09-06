@@ -2,6 +2,7 @@ import argparse
 import gc
 import json
 import time
+from typing import cast
 
 import torch
 from torch.nn.attention import SDPBackend, sdpa_kernel
@@ -11,38 +12,50 @@ from harness.loader import load_model
 from harness.profiles import get_profile
 
 SHORT_PROMPT = "The present King of France is"
-LONG_PROMPT = "The Meta Llama 3.1 collection of multilingual large language models (LLMs) is a collection of pretrained and instruction tuned generative models in 8B, 70B and 405B sizes (text in/text out). The Llama 3.1 instruction tuned text only models (8B, 70B, 405B) are optimized for multilingual dialogue use cases and outperform many of the available open source"
+LONG_PROMPT = (
+    "The Meta Llama 3.1 collection of multilingual large language models (LLMs) is a collection "
+    "of pretrained and instruction tuned generative models in 8B, 70B and 405B sizes (text in/text "
+    "out). The Llama 3.1 instruction tuned text only models (8B, 70B, 405B) are optimized for "
+    "multilingual dialogue use cases and outperform many of the available open source"
+)
 
 PROMPT = LONG_PROMPT
 
-def main() -> None:
-    # parse flags
-    parser = argparse.ArgumentParser(description="Compare fp32 and bf16 model outputs.")
-    parser.add_argument(
-        "--profile",
-        choices=("local", "modal"),
-        default="local",
-        help="execution profile (default local)",
-    )
-    args = parser.parse_args()
-    if args.profile == "modal":
-        parser.error("the modal profile is not configured yet; use --profile local")
 
-    path = get_profile("dev").snapshot_path()
+def compare(model_profile: str, device: str, prompt: str = PROMPT) -> dict:
+    """Run all four models sequentially, keeping comparison logits on CPU."""
+    if device == "cuda":
+        if not torch.cuda.is_available():
+            raise RuntimeError("CUDA is required for the modal profile")
+        torch.set_float32_matmul_precision("highest")
+
+    path = get_profile(model_profile).snapshot_path()
     tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True)
-    ids = tokenizer(PROMPT, return_tensors="pt").input_ids
+    ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device=device)
     outputs = {}
     runs = {}
 
     # transformers fp32
     print("Running transformers fp32...", flush=True)
-    model = AutoModelForCausalLM.from_pretrained(
-        path, dtype=torch.float32, attn_implementation="sdpa", local_files_only=True
-    ).eval()
+    model = (
+        cast(
+            torch.nn.Module,
+            AutoModelForCausalLM.from_pretrained(
+                path, dtype=torch.float32, attn_implementation="sdpa", local_files_only=True
+            ),
+        )
+        .to(device=device)
+        .eval()
+    )
+    if device == "cuda":
+        torch.cuda.synchronize()
     start = time.perf_counter()
     with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
         logits = model(ids, use_cache=False).logits
+    if device == "cuda":
+        torch.cuda.synchronize()
     elapsed = time.perf_counter() - start
+    logits = logits.cpu()
     values, indices = logits[0, -1].float().topk(5)
     runs["transformers_fp32"] = {
         "logit_dtype": str(logits.dtype),
@@ -57,16 +70,30 @@ def main() -> None:
     outputs["transformers_fp32"] = logits.float().clone()
     del model, logits
     gc.collect()
+    if device == "cuda":
+        torch.cuda.empty_cache()
 
     # transformers bf16
     print("Running transformers bf16...", flush=True)
-    model = AutoModelForCausalLM.from_pretrained(
-        path, dtype=torch.bfloat16, attn_implementation="sdpa", local_files_only=True
-    ).eval()
+    model = (
+        cast(
+            torch.nn.Module,
+            AutoModelForCausalLM.from_pretrained(
+                path, dtype=torch.bfloat16, attn_implementation="sdpa", local_files_only=True
+            ),
+        )
+        .to(device=device)
+        .eval()
+    )
+    if device == "cuda":
+        torch.cuda.synchronize()
     start = time.perf_counter()
     with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
         logits = model(ids, use_cache=False).logits
+    if device == "cuda":
+        torch.cuda.synchronize()
     elapsed = time.perf_counter() - start
+    logits = logits.cpu()
     values, indices = logits[0, -1].float().topk(5)
     runs["transformers_bf16"] = {
         "logit_dtype": str(logits.dtype),
@@ -81,14 +108,21 @@ def main() -> None:
     outputs["transformers_bf16"] = logits.float().clone()
     del model, logits
     gc.collect()
+    if device == "cuda":
+        torch.cuda.empty_cache()
 
     # custom fp32
     print("Running custom fp32...", flush=True)
-    model = load_model("dev", device="cpu", dtype=torch.float32)
+    model = load_model(model_profile, device=device, dtype=torch.float32)
+    if device == "cuda":
+        torch.cuda.synchronize()
     start = time.perf_counter()
     with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
         logits = model(ids)
+    if device == "cuda":
+        torch.cuda.synchronize()
     elapsed = time.perf_counter() - start
+    logits = logits.cpu()
     values, indices = logits[0, -1].float().topk(5)
     runs["custom_fp32"] = {
         "logit_dtype": str(logits.dtype),
@@ -103,14 +137,21 @@ def main() -> None:
     outputs["custom_fp32"] = logits.float().clone()
     del model, logits
     gc.collect()
+    if device == "cuda":
+        torch.cuda.empty_cache()
 
     # custom bf16
     print("Running custom bf16...", flush=True)
-    model = load_model("dev", device="cpu", dtype=torch.bfloat16)
+    model = load_model(model_profile, device=device, dtype=torch.bfloat16)
+    if device == "cuda":
+        torch.cuda.synchronize()
     start = time.perf_counter()
     with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
         logits = model(ids)
+    if device == "cuda":
+        torch.cuda.synchronize()
     elapsed = time.perf_counter() - start
+    logits = logits.cpu()
     values, indices = logits[0, -1].float().topk(5)
     runs["custom_bf16"] = {
         "logit_dtype": str(logits.dtype),
@@ -125,8 +166,27 @@ def main() -> None:
     outputs["custom_bf16"] = logits.float().clone()
     del model, logits
     gc.collect()
+    if device == "cuda":
+        torch.cuda.empty_cache()
 
-    # compare them all
+    comparisons = compare_outputs(outputs, tokenizer)
+    return {
+        "prompt": prompt,
+        "token_ids": ids.cpu().tolist(),
+        "model_profile": model_profile,
+        "checkpoint": str(path),
+        "torch_version": torch.__version__,
+        "device": device,
+        "gpu": torch.cuda.get_device_name() if device == "cuda" else None,
+        "attention_backend": "SDPA math",
+        "float32_matmul_precision": torch.get_float32_matmul_precision(),
+        "use_cache": False,
+        "runs": runs,
+        "comparisons": comparisons,
+    }
+
+
+def compare_outputs(outputs: dict, tokenizer) -> dict:
     comparisons = {}
     for reference, candidate in (
         ("transformers_fp32", "transformers_bf16"),
@@ -139,7 +199,7 @@ def main() -> None:
         expected, actual = outputs[reference], outputs[candidate]
         error = (actual - expected).abs()
         disagreements = []
-        for position in range(ids.shape[1]):
+        for position in range(expected.shape[1]):
             ref_token = int(expected[0, position].argmax())
             actual_token = int(actual[0, position].argmax())
             if ref_token != actual_token:
@@ -157,25 +217,28 @@ def main() -> None:
             "max_absolute_error": float(error.max()),
             "last_position_mean_absolute_error": float(error[0, -1].mean()),
             "last_position_max_absolute_error": float(error[0, -1].max()),
-            "argmax_agreement": f"{ids.shape[1] - len(disagreements)}/{ids.shape[1]}",
+            "argmax_agreement": f"{expected.shape[1] - len(disagreements)}/{expected.shape[1]}",
             "disagreements": disagreements,
         }
-    print(
-        json.dumps(
-            {
-                "prompt": PROMPT,
-                "token_ids": ids.tolist(),
-                "checkpoint": str(path),
-                "torch_version": torch.__version__,
-                "device": "cpu",
-                "attention_backend": "SDPA math",
-                "use_cache": False,
-                "runs": runs,
-                "comparisons": comparisons,
-            },
-            indent=2,
-        )
+    return comparisons
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Compare fp32 and bf16 model outputs.")
+    parser.add_argument(
+        "--profile",
+        choices=("local", "modal"),
+        default="local",
+        help="local: 1B on CPU; modal: 8B on an A100 40GB (default local)",
     )
+    args = parser.parse_args()
+    if args.profile == "modal":
+        from modal_compare import run
+
+        report = run(PROMPT)
+    else:
+        report = compare("dev", "cpu")
+    print(json.dumps(report, indent=2))
 
 
 if __name__ == "__main__":

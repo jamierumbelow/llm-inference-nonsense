@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import torch
-from safetensors.torch import load_file
+from safetensors import safe_open
 
 from harness.config import LlamaConfig
 from harness.model import LlamaForCausalLM, rope_inv_freq
@@ -28,11 +28,12 @@ def load_model(
     with torch.device("meta"):
         model = LlamaForCausalLM(cfg)
 
-    # Checkpoints may be sharded across several files; the union is the full state dict.
+    # transfer one tensor at a time, avoiding a full fp32 checkpoint copy in CPU RAM.
     state: dict[str, torch.Tensor] = {}
     for shard in sorted(path.glob("*.safetensors")):
-        state.update(load_file(shard, device="cpu"))
-    state = {k: v.to(dtype) for k, v in state.items()}
+        with safe_open(shard, framework="pt", device="cpu") as checkpoint:
+            for key in checkpoint.keys():  # noqa: SIM118 -- safe_open is not a dict/iterable
+                state[key] = checkpoint.get_tensor(key).to(device=device, dtype=dtype)
 
     if cfg.tie_word_embeddings:
         # The checkpoint omits lm_head; strict loading still wants the key present.
