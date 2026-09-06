@@ -1,4 +1,4 @@
-"""Llama 3 in plain PyTorch.
+"""Experiment 00: a baseline Llama 3 implementation in plain PyTorch.
 
 This is the reference forward pass we begin with. deliberately simple:
 * no KV cache
@@ -41,7 +41,8 @@ def rope_inv_freq(head_dim: int, theta: float, scaling: RopeScaling | None) -> T
     than original_ctx / high_freq_factor are left alone, and the band in between
     is linearly blended. Returns shape [hd / 2] in float32.
     """
-    j = torch.arange(0, head_dim, 2, dtype=torch.float32)
+    # Keep this buffer real when the loader constructs parameters on the meta device.
+    j = torch.arange(0, head_dim, 2, dtype=torch.float32, device="cpu")
     inv_freq = 1.0 / (theta ** (j / head_dim))
     if scaling is None:
         return inv_freq

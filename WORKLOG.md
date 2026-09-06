@@ -2,7 +2,9 @@
 
 _All datetimes in PST. Written manually by Jamie._
 
-## September 2nd, 2026
+<details>
+
+<summary>## September 2nd, 2026</summary>
 
 - 21:59 - First thing we need is Python and uv to manage packages. Using mise to keep the versions pinned.
 - 22:08 - Okay, next we need to get the Python workspace setup. will use packages/ for shared code and experiments/ for each of the experimental phases. the idea here is that we start with a very crude, B=1 model with nothing special going on, use that as a baseline, and then add to it as we go. we will definitely want to visualise some of this too so we'll want notebooks - claude recommends marimo over jupyter, which seems sensible - and ruff etc for formatting because I'm a golang stan and like an integrated formatter. pytorch for actual implementation because it's ubiquitous, and i'll bring in [transformers](https://pypi.org/project/transformers/) as well so I can have a reference implem to test against
@@ -51,7 +53,11 @@ a few worries/things to check/clarifications:
 
 but for now it's bedtime.
 
-## September 6th, 2026
+</details>
+
+<details>
+
+<summary>## September 6th, 2026</summary>
 
 12:58 - Let's run things in bf16. need to separate out the correctness of the implem from the numerical differences, so I'll run the transformers version in fp32 and bf16, and the custom implem in bf16, and see what we get.
 
@@ -270,3 +276,24 @@ But this doesn't matter hugely because:
 * Disagreements over logits remain very close
 
 Most importantly, the purpose of this whole exercise is not to get our custom model to match the off-the-shelf version identically. Rather, what we want is to get a simple model in place that we can benchmark and then build upon. What actual model we use isn't hugely relevant.
+
+15:08 - A few other things that occurred to me when writing the above:
+* I'd like each experiment in the experiments/ directory to define its own model; the harness should be able to load that and the runner should be able to run it, but the packages shouldn't contain model code (we want to be able to compare different model definitions as we increase the complexity)
+* We should still run a sweep against various different prompts
+* We should define a fixed prompt suite so we're not changing prompts between experiments
+* Our output_logs should include the full CLI output, not just the comparison output
+
+I'll get codex to do a pass and check the changes.
+
+15:29 - All looking good. I've moved the model into e00_baseline, our first experiment, and added the runner and harness changes needed. A few tasks left before we can run e00_baseline and get some proper benchmarking numbers:
+1. Add support for greedy generation - ie the prompt->output->prompt+output->next output loop – in the harness
+2. Define a fixed benchmark workload to run in every experiment. It needs minimally:
+    - Short prefill
+    - Medium prefill
+    - Long prefill
+    - Short decode
+    - Long decode
+3. Add a dedicated benchmark runner, which gives us the various timings we'll care about: prefill latency, time-to-first-token, total generation latency, avg time per token, peak GPU memory allocation, and some measures of variation.
+4. Benchmark reports should output everything we need to make them reproducible (experiment, git commit, model and checkpoint, dtype, GPU, pytorch/cuda versions, runtime values incl batch size, inputs and outputs, and all the raw measurements)
+
+</details>

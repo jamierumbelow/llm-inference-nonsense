@@ -1,0 +1,2600 @@
+$ uv run tools/compare_logits.py --experiment baseline --model 8b --location modal --suite correctness
+✓ Initialized. View run at 
+https://modal.com/apps/jamierumbelow/main/ap-qW0321CUiVLBLnAQgNcnc3
+Building image im-xqliEqPgvWaYFLfNjFMaMl
+
+=> Step 0: FROM base
+
+=> Step 1: ENV HF_HOME=/checkpoints
+
+=> Step 2: ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+
+=> Step 3: ENV PATH=/opt/venv/bin:/usr/local/bin:/usr/bin:/bin
+
+=> Step 4: ENV PYTHONPATH=/app/packages/harness/src:/app/packages/runner/src:/app/experiments/baseline/src
+Saving image...
+Image saved, took 465.69ms
+
+Built image im-xqliEqPgvWaYFLfNjFMaMl in 1.04s
+
+
+Building image im-q5MMt3ULziIP0WC8aDqQ8X
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 340.73ms
+
+Built image im-q5MMt3ULziIP0WC8aDqQ8X in 1.32s
+
+
+Building image im-7zjjpcs7tI4ofbth1HRp0d
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 470.19ms
+
+Built image im-7zjjpcs7tI4ofbth1HRp0d in 1.34s
+
+
+Building image im-r4TKuJxLWSnArrRLvvdiwy
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 502.27ms
+
+Built image im-r4TKuJxLWSnArrRLvvdiwy in 1.37s
+
+
+Building image im-G4QmizldQHc0rWLotHcD8w
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 350.83ms
+
+Built image im-G4QmizldQHc0rWLotHcD8w in 2.78s
+
+
+Building image im-DkJbQl8tEEf6d4YXKkLMVt
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 434.56ms
+
+Built image im-DkJbQl8tEEf6d4YXKkLMVt in 1.40s
+
+
+Building image im-tfMcHkfL56rUTkR7fd9AMH
+
+=> Step 0: FROM base
+
+=> Step 1: RUN uv sync --frozen --no-install-workspace
+Using CPython 3.13.3 interpreter at: /usr/local/bin/python3
+Creating virtual environment at: /opt/venv
+Downloading nvidia-cusolver (191.6MiB)
+Downloading nvidia-cuda-nvrtc (86.0MiB)
+Downloading nvidia-cuda-cupti (10.2MiB)
+Downloading sympy (6.0MiB)
+Downloading pyright (5.9MiB)
+Downloading tokenizers (3.2MiB)
+Downloading nvidia-cuda-runtime (2.1MiB)
+Downloading networkx (2.0MiB)
+Downloading aiohttp (1.7MiB)
+Downloading jedi (1.5MiB)
+Downloading pygments (1.2MiB)
+Downloading nvidia-cufile (1.2MiB)
+Downloading nvidia-nvjitlink (38.9MiB)
+Downloading nvidia-nvshmem-cu13 (57.6MiB)
+Downloading nvidia-nccl-cu13 (206.0MiB)
+Downloading nvidia-cufft (204.2MiB)
+Downloading nvidia-curand (56.8MiB)
+Downloading numpy (15.9MiB)
+Downloading marimo (37.7MiB)
+Downloading torch (528.9MiB)
+Downloading triton (236.5MiB)
+Downloading nvidia-cusparse (139.2MiB)
+Downloading nvidia-cudnn-cu13 (527.5MiB)
+Downloading nvidia-cublas (403.5MiB)
+Downloading nvidia-cusparselt-cu13 (162.3MiB)
+Downloading transformers (11.5MiB)
+Downloading ruff (9.8MiB)
+Downloading hf-xet (4.3MiB)
+Downloading cuda-bindings (6.2MiB)
+Downloading loro (3.3MiB)
+ Downloaded nvidia-cufile
+ Downloaded pygments
+ Downloaded aiohttp
+ Downloaded nvidia-cuda-runtime
+ Downloaded networkx
+ Downloaded loro
+ Downloaded tokenizers
+ Downloaded hf-xet
+ Downloaded cuda-bindings
+ Downloaded sympy
+ Downloaded jedi
+ Downloaded ruff
+ Downloaded nvidia-cuda-cupti
+ Downloaded transformers
+ Downloaded numpy
+ Downloaded pyright
+ Downloaded marimo
+ Downloaded nvidia-nvjitlink
+ Downloaded nvidia-curand
+ Downloaded nvidia-nvshmem-cu13
+ Downloaded nvidia-cuda-nvrtc
+ Downloaded nvidia-cusparse
+ Downloaded nvidia-cusparselt-cu13
+ Downloaded nvidia-cusolver
+ Downloaded nvidia-cufft
+ Downloaded nvidia-nccl-cu13
+ Downloaded triton
+ Downloaded nvidia-cublas
+ Downloaded nvidia-cudnn-cu13
+ Downloaded torch
+Prepared 96 packages in 16.23s
+Installed 96 packages in 2.39s
+Bytecode compiled 11311 files in 4.56s
+ + aiohappyeyeballs==2.7.1
+ + aiohttp==3.14.3
+ + aiosignal==1.4.0
+ + annotated-doc==0.0.5
+ + anyio==4.15.0
+ + attrs==26.1.0
+ + cbor2==6.1.4
+ + certifi==2026.7.22
+ + click==8.5.0
+ + cuda-bindings==13.3.1
+ + cuda-pathfinder==1.8.1
+ + cuda-toolkit==13.0.3.0
+ + docutils==0.23
+ + filelock==3.32.5
+ + frozenlist==1.8.0
+ + fsspec==2026.7.0
+ + grpclib==0.4.9
+ + h11==0.16.0
+ + h2==4.4.1
+ + hf-xet==1.6.0
+ + hpack==4.2.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + huggingface-hub==1.29.0
+ + hyperframe==6.1.0
+ + idna==3.19
+ + iniconfig==2.3.0
+ + itsdangerous==2.2.0
+ + jedi==0.19.2
+ + jinja2==3.1.6
+ + loro==1.13.2
+ + marimo==0.24.0
+ + markdown==3.10.3
+ + markdown-it-py==4.2.0
+ + markupsafe==3.0.3
+ + mdurl==0.1.2
+ + modal==1.5.5
+ + mpmath==1.3.0
+ + msgspec==0.21.1
+ + multidict==6.7.1
+ + narwhals==2.25.0
+ + networkx==3.6.1
+ + nodeenv==1.10.0
+ + numpy==2.5.2
+ + nvidia-cublas==13.1.1.3
+ + nvidia-cuda-cupti==13.0.85
+ + nvidia-cuda-nvrtc==13.0.88
+ + nvidia-cuda-runtime==13.0.96
+ + nvidia-cudnn-cu13==9.24.0.43
+ + nvidia-cufft==12.0.0.61
+ + nvidia-cufile==1.15.1.6
+ + nvidia-curand==10.4.0.35
+ + nvidia-cusolver==12.0.4.66
+ + nvidia-cusparse==12.6.3.3
+ + nvidia-cusparselt-cu13==0.8.1
+ + nvidia-nccl-cu13==2.30.7
+ + nvidia-nvjitlink==13.3.33
+ + nvidia-nvshmem-cu13==3.4.5
+ + nvidia-nvtx==13.0.85
+ + packaging==26.3
+ + parso==0.8.7
+ + pluggy==1.6.0
+ + propcache==0.5.2
+ + protobuf==6.33.6
+ + psutil==7.2.2
+ + pygments==2.21.0
+ + pymdown-extensions==11.0.2
+ + pyright==1.1.411
+ + pytest==9.1.1
+ + python-multipart==0.0.32
+ + pyyaml==6.0.3
+ + pyzmq==27.2.0
+ + regex==2026.9.3
+ + rich==15.0.0
+ + ruff==0.16.5
+ + safetensors==0.8.0
+ + setuptools==84.0.0
+ + shellingham==1.5.4
+ + starlette==1.6.0
+ + sympy==1.14.0
+ + synchronicity==0.12.5
+ + tokenizers==0.23.1
+ + toml==0.10.2
+ + tomlkit==0.15.1
+ + torch==2.14.0
+ + tqdm==4.70.0
+ + transformers==5.16.1
+ + triton==3.8.0
+ + typer==0.27.2
+ + types-certifi==2021.10.8.3
+ + types-toml==0.10.8.20260518
+ + typing-extensions==4.16.0
+ + uvicorn==0.52.4
+ + watchfiles==1.2.0
+ + websockets==17.1
+ + yarl==1.24.5
+Saving image...
+Image saved, took 4.79s
+
+Built image im-tfMcHkfL56rUTkR7fd9AMH in 30.92s
+
+
+✓ Created objects.
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/experiments/base
+│   line/src
+├── 🔨 Created mount PythonPackage:runner
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/packages/harness
+│   /src
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/packages/runner/
+│   src
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/pyproject.toml
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/uv.lock
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/packages/harness
+│   /pyproject.toml
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/packages/runner/
+│   pyproject.toml
+├── 🔨 Created mount 
+│   /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/experiments/base
+│   line/pyproject.toml
+├── 🔨 Created function prepare_checkpoint.
+└── 🔨 Created function compare_on_gpu.
+
+[1AFetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]
+[1AFetching 10 files: 100%|██████████| 10/10 [00:00<00:00, 187.54it/s]
+Running transformers_fp32...
+
+[1ALoading weights:   0%|          | 0/291 [00:00<?, ?it/s]
+[1ALoading weights:   0%|          | 1/291 [00:00<04:10,  1.16it/s]
+[1ALoading weights:  14%|█▍        | 41/291 [00:01<00:04, 52.41it/s]
+[1ALoading weights:  19%|█▉        | 55/291 [00:01<00:03, 63.24it/s]
+[1ALoading weights:  23%|██▎       | 68/291 [00:01<00:03, 64.82it/s]
+[1ALoading weights:  27%|██▋       | 79/291 [00:01<00:03, 63.14it/s]
+[1ALoading weights:  30%|███       | 88/291 [00:01<00:03, 64.66it/s]
+[1ALoading weights:  33%|███▎      | 97/291 [00:01<00:02, 67.64it/s]
+[1ALoading weights:  36%|███▋      | 106/291 [00:01<00:02, 66.50it/s]
+[1ALoading weights:  39%|███▉      | 114/291 [00:02<00:02, 66.89it/s]
+[1ALoading weights:  42%|████▏     | 122/291 [00:02<00:02, 69.76it/s]
+[1ALoading weights:  45%|████▌     | 131/291 [00:02<00:02, 71.87it/s]
+[1ALoading weights:  48%|████▊     | 140/291 [00:02<00:02, 65.25it/s]
+[1ALoading weights:  52%|█████▏    | 150/291 [00:02<00:02, 66.02it/s]
+[1ALoading weights:  56%|█████▌    | 163/291 [00:02<00:01, 73.90it/s]
+[1ALoading weights:  59%|█████▉    | 171/291 [00:02<00:01, 71.80it/s]
+[1ALoading weights:  62%|██████▏   | 179/291 [00:02<00:01, 67.32it/s]
+[1ALoading weights:  64%|██████▍   | 186/291 [00:03<00:01, 65.35it/s]
+[1ALoading weights:  69%|██████▉   | 201/291 [00:03<00:01, 85.22it/s]
+[1ALoading weights:  72%|███████▏  | 210/291 [00:03<00:01, 80.56it/s]
+[1ALoading weights:  75%|███████▌  | 219/291 [00:03<00:00, 77.55it/s]
+[1ALoading weights:  78%|███████▊  | 227/291 [00:03<00:00, 75.67it/s]
+[1ALoading weights:  81%|████████  | 235/291 [00:03<00:00, 72.89it/s]
+[1ALoading weights:  84%|████████▎ | 243/291 [00:03<00:00, 67.62it/s]
+[1ALoading weights:  86%|████████▌ | 250/291 [00:03<00:00, 65.44it/s]
+[1ALoading weights:  89%|████████▊ | 258/291 [00:04<00:00, 67.73it/s]
+[1ALoading weights:  92%|█████████▏| 267/291 [00:04<00:00, 71.33it/s]
+[1ALoading weights:  95%|█████████▍| 275/291 [00:04<00:00, 72.64it/s]
+[1ALoading weights: 100%|██████████| 291/291 [00:04<00:00, 66.77it/s]
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+Running transformers_bf16...
+
+[1ALoading weights:   0%|          | 0/291 [00:00<?, ?it/s]
+[1ALoading weights: 100%|██████████| 291/291 [00:00<00:00, 3170.13it/s]
+Running custom_fp32...
+Running custom_bf16...
+Stopping app - local entrypoint completed.
+Runner terminated.
+✓ App completed. View run at 
+https://modal.com/apps/jamierumbelow/main/ap-qW0321CUiVLBLnAQgNcnc3
+{
+  "experiment": "baseline",
+  "model": "8b",
+  "checkpoint": "/__modal/volumes/vo-WGkJ0vfw6w1cXwQ4EyCnPQ/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+  "torch_version": "2.14.0+cu130",
+  "device": "cuda",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "attention_backend": "SDPA math",
+  "float32_matmul_precision": "highest",
+  "use_cache": false,
+  "prompts": {
+    "one_token": {
+      "text": "",
+      "token_ids": [
+        [
+          128000
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14924,
+              "text": "Question",
+              "logit": 11.741262435913086
+            },
+            {
+              "id": 128006,
+              "text": "<|start_header_id|>",
+              "logit": 11.016576766967773
+            },
+            {
+              "id": 17297,
+              "text": "\u4e0b",
+              "logit": 10.526865005493164
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 10.15467643737793
+            },
+            {
+              "id": 121648,
+              "text": "\u60a3\u8005",
+              "logit": 9.61783218383789
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14924,
+              "text": "Question",
+              "logit": 11.75
+            },
+            {
+              "id": 128006,
+              "text": "<|start_header_id|>",
+              "logit": 10.75
+            },
+            {
+              "id": 17297,
+              "text": "\u4e0b",
+              "logit": 10.4375
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 10.125
+            },
+            {
+              "id": 121648,
+              "text": "\u60a3\u8005",
+              "logit": 9.5625
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14924,
+              "text": "Question",
+              "logit": 11.741262435913086
+            },
+            {
+              "id": 128006,
+              "text": "<|start_header_id|>",
+              "logit": 11.01657485961914
+            },
+            {
+              "id": 17297,
+              "text": "\u4e0b",
+              "logit": 10.526864051818848
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 10.154675483703613
+            },
+            {
+              "id": 121648,
+              "text": "\u60a3\u8005",
+              "logit": 9.617830276489258
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14924,
+              "text": "Question",
+              "logit": 11.6875
+            },
+            {
+              "id": 128006,
+              "text": "<|start_header_id|>",
+              "logit": 11.1875
+            },
+            {
+              "id": 17297,
+              "text": "\u4e0b",
+              "logit": 10.5625
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 10.0625
+            },
+            {
+              "id": 121648,
+              "text": "\u60a3\u8005",
+              "logit": 9.6875
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.06130342185497284,
+          "max_absolute_error": 0.4462662935256958,
+          "last_position_mean_absolute_error": 0.06130342185497284,
+          "last_position_max_absolute_error": 0.4462662935256958,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 6.377851491379261e-07,
+          "max_absolute_error": 4.291534423828125e-06,
+          "last_position_mean_absolute_error": 6.377851491379261e-07,
+          "last_position_max_absolute_error": 4.291534423828125e-06,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.06365345418453217,
+          "max_absolute_error": 0.4697037935256958,
+          "last_position_mean_absolute_error": 0.06365345418453217,
+          "last_position_max_absolute_error": 0.4697037935256958,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.06130312755703926,
+          "max_absolute_error": 0.446262001991272,
+          "last_position_mean_absolute_error": 0.06130312755703926,
+          "last_position_max_absolute_error": 0.446262001991272,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.11244188249111176,
+          "max_absolute_error": 0.4375,
+          "last_position_mean_absolute_error": 0.11244188249111176,
+          "last_position_max_absolute_error": 0.4375,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.06365358084440231,
+          "max_absolute_error": 0.469699501991272,
+          "last_position_mean_absolute_error": 0.06365358084440231,
+          "last_position_max_absolute_error": 0.469699501991272,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        }
+      }
+    },
+    "sentence": {
+      "text": "The present King of France is",
+      "token_ids": [
+        [
+          128000,
+          791,
+          3118,
+          6342,
+          315,
+          9822,
+          374
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 15.731908798217773
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 14.618712425231934
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 14.468216896057129
+            },
+            {
+              "id": 539,
+              "text": " not",
+              "logit": 14.200788497924805
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 13.911626815795898
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 15.75
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 14.6875
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 14.5
+            },
+            {
+              "id": 539,
+              "text": " not",
+              "logit": 14.1875
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 13.9375
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 15.73190975189209
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 14.618714332580566
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 14.468220710754395
+            },
+            {
+              "id": 539,
+              "text": " not",
+              "logit": 14.200790405273438
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 13.911628723144531
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 15.75
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 14.6875
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 14.5
+            },
+            {
+              "id": 539,
+              "text": " not",
+              "logit": 14.25
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 13.9375
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.02773272432386875,
+          "max_absolute_error": 0.4696791172027588,
+          "last_position_mean_absolute_error": 0.014491692185401917,
+          "last_position_max_absolute_error": 0.09076690673828125,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 1.417551061422273e-06,
+          "max_absolute_error": 1.2755393981933594e-05,
+          "last_position_mean_absolute_error": 1.1586878372327192e-06,
+          "last_position_max_absolute_error": 7.033348083496094e-06,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.026102978736162186,
+          "max_absolute_error": 0.4696791172027588,
+          "last_position_mean_absolute_error": 0.016300018876791,
+          "last_position_max_absolute_error": 0.10041141510009766,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.02773287147283554,
+          "max_absolute_error": 0.4696739912033081,
+          "last_position_mean_absolute_error": 0.014491626992821693,
+          "last_position_max_absolute_error": 0.09076595306396484,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.03536069765686989,
+          "max_absolute_error": 0.359375,
+          "last_position_mean_absolute_error": 0.018058404326438904,
+          "last_position_max_absolute_error": 0.1171875,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.02610277757048607,
+          "max_absolute_error": 0.4696739912033081,
+          "last_position_mean_absolute_error": 0.01630009338259697,
+          "last_position_max_absolute_error": 0.10041141510009766,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        }
+      }
+    },
+    "code": {
+      "text": "def fibonacci(n: int) -> int:\n    if n < 2:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n",
+      "token_ids": [
+        [
+          128000,
+          755,
+          76798,
+          1471,
+          25,
+          528,
+          8,
+          1492,
+          528,
+          512,
+          262,
+          422,
+          308,
+          366,
+          220,
+          17,
+          512,
+          286,
+          471,
+          308,
+          198,
+          262,
+          471,
+          76798,
+          1471,
+          482,
+          220,
+          16,
+          8,
+          489,
+          76798,
+          1471,
+          482,
+          220,
+          17,
+          340
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 15.648311614990234
+            },
+            {
+              "id": 1374,
+              "text": "print",
+              "logit": 14.762293815612793
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 14.659706115722656
+            },
+            {
+              "id": 15152,
+              "text": "    \n\n",
+              "logit": 13.971368789672852
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 13.784076690673828
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 15.625
+            },
+            {
+              "id": 1374,
+              "text": "print",
+              "logit": 14.75
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 14.6875
+            },
+            {
+              "id": 15152,
+              "text": "    \n\n",
+              "logit": 13.9375
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 13.75
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 15.64830207824707
+            },
+            {
+              "id": 1374,
+              "text": "print",
+              "logit": 14.762285232543945
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 14.659706115722656
+            },
+            {
+              "id": 15152,
+              "text": "    \n\n",
+              "logit": 13.971368789672852
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 13.784080505371094
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 15.625
+            },
+            {
+              "id": 1374,
+              "text": "print",
+              "logit": 14.75
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 14.6875
+            },
+            {
+              "id": 15152,
+              "text": "    \n\n",
+              "logit": 13.9375
+            },
+            {
+              "id": 755,
+              "text": "def",
+              "logit": 13.8125
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.02407637983560562,
+          "max_absolute_error": 0.4462239146232605,
+          "last_position_mean_absolute_error": 0.0240827277302742,
+          "last_position_max_absolute_error": 0.12970292568206787,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 3.352515250298893e-06,
+          "max_absolute_error": 3.814697265625e-05,
+          "last_position_mean_absolute_error": 2.932773440988967e-06,
+          "last_position_max_absolute_error": 2.288818359375e-05,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.023011483252048492,
+          "max_absolute_error": 0.4618489146232605,
+          "last_position_mean_absolute_error": 0.016333511099219322,
+          "last_position_max_absolute_error": 0.10328364372253418,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.024076450616121292,
+          "max_absolute_error": 0.44622141122817993,
+          "last_position_mean_absolute_error": 0.024082042276859283,
+          "last_position_max_absolute_error": 0.12970173358917236,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.030016504228115082,
+          "max_absolute_error": 0.375,
+          "last_position_mean_absolute_error": 0.028419841080904007,
+          "last_position_max_absolute_error": 0.171875,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.023011399433016777,
+          "max_absolute_error": 0.46184641122817993,
+          "last_position_mean_absolute_error": 0.01633342169225216,
+          "last_position_max_absolute_error": 0.10328531265258789,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        }
+      }
+    },
+    "maths": {
+      "text": "If 3x + 7 = 31, solve for x and then calculate x squared plus 2x.",
+      "token_ids": [
+        [
+          128000,
+          2746,
+          220,
+          18,
+          87,
+          489,
+          220,
+          22,
+          284,
+          220,
+          2148,
+          11,
+          11886,
+          369,
+          865,
+          323,
+          1243,
+          11294,
+          865,
+          53363,
+          5636,
+          220,
+          17,
+          87,
+          13
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 320,
+              "text": " (",
+              "logit": 14.551414489746094
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.301666259765625
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 13.033224105834961
+            },
+            {
+              "id": 510,
+              "text": " [",
+              "logit": 12.963010787963867
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 12.927056312561035
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 320,
+              "text": " (",
+              "logit": 14.625
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.3125
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 13.0625
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 12.9375
+            },
+            {
+              "id": 510,
+              "text": " [",
+              "logit": 12.9375
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 320,
+              "text": " (",
+              "logit": 14.551408767700195
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.301661491394043
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 13.033227920532227
+            },
+            {
+              "id": 510,
+              "text": " [",
+              "logit": 12.963018417358398
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 12.9270601272583
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 320,
+              "text": " (",
+              "logit": 14.5625
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.3125
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 13.0
+            },
+            {
+              "id": 510,
+              "text": " [",
+              "logit": 12.9375
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 12.875
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.023630425333976746,
+          "max_absolute_error": 0.502525806427002,
+          "last_position_mean_absolute_error": 0.017465904355049133,
+          "last_position_max_absolute_error": 0.10512447357177734,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 2.889210236389772e-06,
+          "max_absolute_error": 5.054473876953125e-05,
+          "last_position_mean_absolute_error": 2.7614332793746144e-06,
+          "last_position_max_absolute_error": 2.384185791015625e-05,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.02265201508998871,
+          "max_absolute_error": 0.3490409851074219,
+          "last_position_mean_absolute_error": 0.01731461100280285,
+          "last_position_max_absolute_error": 0.11601841449737549,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.023630592972040176,
+          "max_absolute_error": 0.5025391578674316,
+          "last_position_mean_absolute_error": 0.017466042190790176,
+          "last_position_max_absolute_error": 0.10512089729309082,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.027881328016519547,
+          "max_absolute_error": 0.6875,
+          "last_position_mean_absolute_error": 0.02217731438577175,
+          "last_position_max_absolute_error": 0.140625,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.02265211194753647,
+          "max_absolute_error": 0.3490428924560547,
+          "last_position_mean_absolute_error": 0.017314985394477844,
+          "last_position_max_absolute_error": 0.11601543426513672,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        }
+      }
+    },
+    "long_passage": {
+      "text": "A language model turns token identifiers into vectors and passes those vectors through a stack of transformer layers. Each layer first mixes information between positions with causal attention, then transforms each position independently with a feed-forward network. Residual connections carry the previous representation around both operations, while normalization keeps the scale of the activations controlled.\n\nDuring inference, causal attention prevents a token from seeing anything to its right. The query at a position is compared with keys from the visible prefix, the resulting scores are normalized, and the values are combined using those weights. Grouped-query attention lets several query heads share one key and value head, reducing memory use during decoding.\n\nRotary position embeddings encode position by rotating pairs of query and key coordinates. The rotation angle changes with both position and frequency. Llama adjusts some of these frequencies so that the model can operate beyond the context length used by the original schedule, while leaving the high-frequency components largely unchanged.\n\nThe first call over a prompt is usually called prefill. A production engine stores the keys and values produced during prefill, then processes one new token at a time without repeating the earlier projections. This key-value cache saves computation but creates new questions about memory layout, allocation, batching, and movement between devices.\n\nNumerical comparisons are useful because a transformer contains many individually simple operations whose composition is easy to get subtly wrong. A misplaced reshape, an incorrect head grouping, or a positional frequency error quickly changes logits throughout the model. Small floating-point differences are expected, so correctness must be judged in relation to the precision and execution backend being used.\n\nA language model turns token identifiers into vectors and passes those vectors through a stack of transformer layers. Each layer first mixes information between positions with causal attention, then transforms each position independently with a feed-forward network. Residual connections carry the previous representation around both operations, while normalization keeps the scale of the activations controlled.\n\nDuring inference, causal attention prevents a token from seeing anything to its right. The query at a position is compared with keys from the visible prefix, the resulting scores are normalized, and the values are combined using those weights. Grouped-query attention lets several query heads share one key and value head, reducing memory use during decoding.\n\nRotary position embeddings encode position by rotating pairs of query and key coordinates. The rotation angle changes with both position and frequency. Llama adjusts some of these frequencies so that the model can operate beyond the context length used by the original schedule, while leaving the high-frequency components largely unchanged.\n\nThe first call over a prompt is usually called prefill. A production engine stores the keys and values produced during prefill, then processes one new token at a time without repeating the earlier projections. This key-value cache saves computation but creates new questions about memory layout, allocation, batching, and movement between devices.\n\nNumerical comparisons are useful because a transformer contains many individually simple operations whose composition is easy to get subtly wrong. A misplaced reshape, an incorrect head grouping, or a positional frequency error quickly changes logits throughout the model. Small floating-point differences are expected, so correctness must be judged in relation to the precision and execution backend being used.\n\nA language model turns token identifiers into vectors and passes those vectors through a stack of transformer layers. Each layer first mixes information between positions with causal attention, then transforms each position independently with a feed-forward network. Residual connections carry the previous representation around both operations, while normalization keeps the scale of the activations controlled.\n\nDuring inference, causal attention prevents a token from seeing anything to its right. The query at a position is compared with keys from the visible prefix, the resulting scores are normalized, and the values are combined using those weights. Grouped-query attention lets several query heads share one key and value head, reducing memory use during decoding.\n\nRotary position embeddings encode position by rotating pairs of query and key coordinates. The rotation angle changes with both position and frequency. Llama adjusts some of these frequencies so that the model can operate beyond the context length used by the original schedule, while leaving the high-frequency components largely unchanged.\n\nThe first call over a prompt is usually called prefill. A production engine stores the keys and values produced during prefill, then processes one new token at a time without repeating the earlier projections. This key-value cache saves computation but creates new questions about memory layout, allocation, batching, and movement between devices.\n\nNumerical comparisons are useful because a transformer contains many individually simple operations whose composition is easy to get subtly wrong. A misplaced reshape, an incorrect head grouping, or a positional frequency error quickly changes logits throughout the model. Small floating-point differences are expected, so correctness must be judged in relation to the precision and execution backend being used.",
+      "token_ids": [
+        [
+          128000,
+          32,
+          4221,
+          1646,
+          10800,
+          4037,
+          48316,
+          1139,
+          23728,
+          323,
+          16609,
+          1884,
+          23728,
+          1555,
+          264,
+          5729,
+          315,
+          43678,
+          13931,
+          13,
+          9062,
+          6324,
+          1176,
+          63526,
+          2038,
+          1990,
+          10093,
+          449,
+          59557,
+          6666,
+          11,
+          1243,
+          29575,
+          1855,
+          2361,
+          29235,
+          449,
+          264,
+          5510,
+          45904,
+          4009,
+          13,
+          1838,
+          3421,
+          13537,
+          6920,
+          279,
+          3766,
+          13340,
+          2212,
+          2225,
+          7677,
+          11,
+          1418,
+          49823,
+          13912,
+          279,
+          5569,
+          315,
+          279,
+          93595,
+          14400,
+          382,
+          16397,
+          45478,
+          11,
+          59557,
+          6666,
+          29034,
+          264,
+          4037,
+          505,
+          9298,
+          4205,
+          311,
+          1202,
+          1314,
+          13,
+          578,
+          3319,
+          520,
+          264,
+          2361,
+          374,
+          7863,
+          449,
+          7039,
+          505,
+          279,
+          9621,
+          9436,
+          11,
+          279,
+          13239,
+          12483,
+          527,
+          30510,
+          11,
+          323,
+          279,
+          2819,
+          527,
+          11093,
+          1701,
+          1884,
+          14661,
+          13,
+          5856,
+          291,
+          66589,
+          6666,
+          15714,
+          3892,
+          3319,
+          14971,
+          4430,
+          832,
+          1401,
+          323,
+          907,
+          2010,
+          11,
+          18189,
+          5044,
+          1005,
+          2391,
+          48216,
+          382,
+          38036,
+          661,
+          2361,
+          71647,
+          16559,
+          2361,
+          555,
+          42496,
+          13840,
+          315,
+          3319,
+          323,
+          1401,
+          14259,
+          13,
+          578,
+          12984,
+          9392,
+          4442,
+          449,
+          2225,
+          2361,
+          323,
+          11900,
+          13,
+          445,
+          81101,
+          84431,
+          1063,
+          315,
+          1521,
+          34873,
+          779,
+          430,
+          279,
+          1646,
+          649,
+          14816,
+          7953,
+          279,
+          2317,
+          3160,
+          1511,
+          555,
+          279,
+          4113,
+          9899,
+          11,
+          1418,
+          9564,
+          279,
+          1579,
+          79412,
+          6956,
+          14090,
+          35957,
+          382,
+          791,
+          1176,
+          1650,
+          927,
+          264,
+          10137,
+          374,
+          6118,
+          2663,
+          864,
+          7712,
+          13,
+          362,
+          5788,
+          4817,
+          10756,
+          279,
+          7039,
+          323,
+          2819,
+          9124,
+          2391,
+          864,
+          7712,
+          11,
+          1243,
+          11618,
+          832,
+          502,
+          4037,
+          520,
+          264,
+          892,
+          2085,
+          40916,
+          279,
+          6931,
+          41579,
+          13,
+          1115,
+          1401,
+          19625,
+          6636,
+          27024,
+          35547,
+          719,
+          11705,
+          502,
+          4860,
+          922,
+          5044,
+          6932,
+          11,
+          24691,
+          11,
+          85356,
+          11,
+          323,
+          7351,
+          1990,
+          7766,
+          382,
+          68837,
+          950,
+          36595,
+          527,
+          5505,
+          1606,
+          264,
+          43678,
+          5727,
+          1690,
+          32399,
+          4382,
+          7677,
+          6832,
+          18528,
+          374,
+          4228,
+          311,
+          636,
+          87417,
+          5076,
+          13,
+          362,
+          90660,
+          44909,
+          11,
+          459,
+          15465,
+          2010,
+          50284,
+          11,
+          477,
+          264,
+          68647,
+          11900,
+          1493,
+          6288,
+          4442,
+          61888,
+          6957,
+          279,
+          1646,
+          13,
+          15344,
+          19596,
+          16983,
+          12062,
+          527,
+          3685,
+          11,
+          779,
+          58423,
+          2011,
+          387,
+          45487,
+          304,
+          12976,
+          311,
+          279,
+          16437,
+          323,
+          11572,
+          19713,
+          1694,
+          1511,
+          382,
+          32,
+          4221,
+          1646,
+          10800,
+          4037,
+          48316,
+          1139,
+          23728,
+          323,
+          16609,
+          1884,
+          23728,
+          1555,
+          264,
+          5729,
+          315,
+          43678,
+          13931,
+          13,
+          9062,
+          6324,
+          1176,
+          63526,
+          2038,
+          1990,
+          10093,
+          449,
+          59557,
+          6666,
+          11,
+          1243,
+          29575,
+          1855,
+          2361,
+          29235,
+          449,
+          264,
+          5510,
+          45904,
+          4009,
+          13,
+          1838,
+          3421,
+          13537,
+          6920,
+          279,
+          3766,
+          13340,
+          2212,
+          2225,
+          7677,
+          11,
+          1418,
+          49823,
+          13912,
+          279,
+          5569,
+          315,
+          279,
+          93595,
+          14400,
+          382,
+          16397,
+          45478,
+          11,
+          59557,
+          6666,
+          29034,
+          264,
+          4037,
+          505,
+          9298,
+          4205,
+          311,
+          1202,
+          1314,
+          13,
+          578,
+          3319,
+          520,
+          264,
+          2361,
+          374,
+          7863,
+          449,
+          7039,
+          505,
+          279,
+          9621,
+          9436,
+          11,
+          279,
+          13239,
+          12483,
+          527,
+          30510,
+          11,
+          323,
+          279,
+          2819,
+          527,
+          11093,
+          1701,
+          1884,
+          14661,
+          13,
+          5856,
+          291,
+          66589,
+          6666,
+          15714,
+          3892,
+          3319,
+          14971,
+          4430,
+          832,
+          1401,
+          323,
+          907,
+          2010,
+          11,
+          18189,
+          5044,
+          1005,
+          2391,
+          48216,
+          382,
+          38036,
+          661,
+          2361,
+          71647,
+          16559,
+          2361,
+          555,
+          42496,
+          13840,
+          315,
+          3319,
+          323,
+          1401,
+          14259,
+          13,
+          578,
+          12984,
+          9392,
+          4442,
+          449,
+          2225,
+          2361,
+          323,
+          11900,
+          13,
+          445,
+          81101,
+          84431,
+          1063,
+          315,
+          1521,
+          34873,
+          779,
+          430,
+          279,
+          1646,
+          649,
+          14816,
+          7953,
+          279,
+          2317,
+          3160,
+          1511,
+          555,
+          279,
+          4113,
+          9899,
+          11,
+          1418,
+          9564,
+          279,
+          1579,
+          79412,
+          6956,
+          14090,
+          35957,
+          382,
+          791,
+          1176,
+          1650,
+          927,
+          264,
+          10137,
+          374,
+          6118,
+          2663,
+          864,
+          7712,
+          13,
+          362,
+          5788,
+          4817,
+          10756,
+          279,
+          7039,
+          323,
+          2819,
+          9124,
+          2391,
+          864,
+          7712,
+          11,
+          1243,
+          11618,
+          832,
+          502,
+          4037,
+          520,
+          264,
+          892,
+          2085,
+          40916,
+          279,
+          6931,
+          41579,
+          13,
+          1115,
+          1401,
+          19625,
+          6636,
+          27024,
+          35547,
+          719,
+          11705,
+          502,
+          4860,
+          922,
+          5044,
+          6932,
+          11,
+          24691,
+          11,
+          85356,
+          11,
+          323,
+          7351,
+          1990,
+          7766,
+          382,
+          68837,
+          950,
+          36595,
+          527,
+          5505,
+          1606,
+          264,
+          43678,
+          5727,
+          1690,
+          32399,
+          4382,
+          7677,
+          6832,
+          18528,
+          374,
+          4228,
+          311,
+          636,
+          87417,
+          5076,
+          13,
+          362,
+          90660,
+          44909,
+          11,
+          459,
+          15465,
+          2010,
+          50284,
+          11,
+          477,
+          264,
+          68647,
+          11900,
+          1493,
+          6288,
+          4442,
+          61888,
+          6957,
+          279,
+          1646,
+          13,
+          15344,
+          19596,
+          16983,
+          12062,
+          527,
+          3685,
+          11,
+          779,
+          58423,
+          2011,
+          387,
+          45487,
+          304,
+          12976,
+          311,
+          279,
+          16437,
+          323,
+          11572,
+          19713,
+          1694,
+          1511,
+          382,
+          32,
+          4221,
+          1646,
+          10800,
+          4037,
+          48316,
+          1139,
+          23728,
+          323,
+          16609,
+          1884,
+          23728,
+          1555,
+          264,
+          5729,
+          315,
+          43678,
+          13931,
+          13,
+          9062,
+          6324,
+          1176,
+          63526,
+          2038,
+          1990,
+          10093,
+          449,
+          59557,
+          6666,
+          11,
+          1243,
+          29575,
+          1855,
+          2361,
+          29235,
+          449,
+          264,
+          5510,
+          45904,
+          4009,
+          13,
+          1838,
+          3421,
+          13537,
+          6920,
+          279,
+          3766,
+          13340,
+          2212,
+          2225,
+          7677,
+          11,
+          1418,
+          49823,
+          13912,
+          279,
+          5569,
+          315,
+          279,
+          93595,
+          14400,
+          382,
+          16397,
+          45478,
+          11,
+          59557,
+          6666,
+          29034,
+          264,
+          4037,
+          505,
+          9298,
+          4205,
+          311,
+          1202,
+          1314,
+          13,
+          578,
+          3319,
+          520,
+          264,
+          2361,
+          374,
+          7863,
+          449,
+          7039,
+          505,
+          279,
+          9621,
+          9436,
+          11,
+          279,
+          13239,
+          12483,
+          527,
+          30510,
+          11,
+          323,
+          279,
+          2819,
+          527,
+          11093,
+          1701,
+          1884,
+          14661,
+          13,
+          5856,
+          291,
+          66589,
+          6666,
+          15714,
+          3892,
+          3319,
+          14971,
+          4430,
+          832,
+          1401,
+          323,
+          907,
+          2010,
+          11,
+          18189,
+          5044,
+          1005,
+          2391,
+          48216,
+          382,
+          38036,
+          661,
+          2361,
+          71647,
+          16559,
+          2361,
+          555,
+          42496,
+          13840,
+          315,
+          3319,
+          323,
+          1401,
+          14259,
+          13,
+          578,
+          12984,
+          9392,
+          4442,
+          449,
+          2225,
+          2361,
+          323,
+          11900,
+          13,
+          445,
+          81101,
+          84431,
+          1063,
+          315,
+          1521,
+          34873,
+          779,
+          430,
+          279,
+          1646,
+          649,
+          14816,
+          7953,
+          279,
+          2317,
+          3160,
+          1511,
+          555,
+          279,
+          4113,
+          9899,
+          11,
+          1418,
+          9564,
+          279,
+          1579,
+          79412,
+          6956,
+          14090,
+          35957,
+          382,
+          791,
+          1176,
+          1650,
+          927,
+          264,
+          10137,
+          374,
+          6118,
+          2663,
+          864,
+          7712,
+          13,
+          362,
+          5788,
+          4817,
+          10756,
+          279,
+          7039,
+          323,
+          2819,
+          9124,
+          2391,
+          864,
+          7712,
+          11,
+          1243,
+          11618,
+          832,
+          502,
+          4037,
+          520,
+          264,
+          892,
+          2085,
+          40916,
+          279,
+          6931,
+          41579,
+          13,
+          1115,
+          1401,
+          19625,
+          6636,
+          27024,
+          35547,
+          719,
+          11705,
+          502,
+          4860,
+          922,
+          5044,
+          6932,
+          11,
+          24691,
+          11,
+          85356,
+          11,
+          323,
+          7351,
+          1990,
+          7766,
+          382,
+          68837,
+          950,
+          36595,
+          527,
+          5505,
+          1606,
+          264,
+          43678,
+          5727,
+          1690,
+          32399,
+          4382,
+          7677,
+          6832,
+          18528,
+          374,
+          4228,
+          311,
+          636,
+          87417,
+          5076,
+          13,
+          362,
+          90660,
+          44909,
+          11,
+          459,
+          15465,
+          2010,
+          50284,
+          11,
+          477,
+          264,
+          68647,
+          11900,
+          1493,
+          6288,
+          4442,
+          61888,
+          6957,
+          279,
+          1646,
+          13,
+          15344,
+          19596,
+          16983,
+          12062,
+          527,
+          3685,
+          11,
+          779,
+          58423,
+          2011,
+          387,
+          45487,
+          304,
+          12976,
+          311,
+          279,
+          16437,
+          323,
+          11572,
+          19713,
+          1694,
+          1511,
+          13
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.409379959106445
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 13.054858207702637
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 11.519965171813965
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 11.516502380371094
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 11.248517990112305
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.375
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 13.0625
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 11.5
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 11.4375
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 11.25
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.409379005432129
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 13.054864883422852
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 11.519975662231445
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 11.516488075256348
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 11.24853515625
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 13.375
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 13.0625
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 11.625
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 11.5
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 11.25
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.029089024290442467,
+          "max_absolute_error": 1.9281468391418457,
+          "last_position_mean_absolute_error": 0.03461698442697525,
+          "last_position_max_absolute_error": 0.24788379669189453,
+          "argmax_agreement": "928/937",
+          "disagreements": [
+            {
+              "position": 72,
+              "reference_token": " future",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.027406692504882812
+            },
+            {
+              "position": 103,
+              "reference_token": " these",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.0443267822265625
+            },
+            {
+              "position": 131,
+              "reference_token": " add",
+              "candidate_token": " are",
+              "reference_top_2_gap": 0.04612541198730469
+            },
+            {
+              "position": 133,
+              "reference_token": " information",
+              "candidate_token": " in",
+              "reference_top_2_gap": 0.11401557922363281
+            },
+            {
+              "position": 169,
+              "reference_token": ".\n\n",
+              "candidate_token": ".",
+              "reference_top_2_gap": 0.0506744384765625
+            },
+            {
+              "position": 189,
+              "reference_token": " dataset",
+              "candidate_token": " sequence",
+              "reference_top_2_gap": 0.02817058563232422
+            },
+            {
+              "position": 210,
+              "reference_token": " uses",
+              "candidate_token": " re",
+              "reference_top_2_gap": 0.04834747314453125
+            },
+            {
+              "position": 247,
+              "reference_token": "ical",
+              "candidate_token": "ous",
+              "reference_top_2_gap": 0.04101753234863281
+            },
+            {
+              "position": 261,
+              "reference_token": " can",
+              "candidate_token": " is",
+              "reference_top_2_gap": 0.024450302124023438
+            }
+          ]
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 8.229803825088311e-06,
+          "max_absolute_error": 0.0005481243133544922,
+          "last_position_mean_absolute_error": 1.1702792107826099e-05,
+          "last_position_max_absolute_error": 6.67572021484375e-05,
+          "argmax_agreement": "937/937",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.0295631755143404,
+          "max_absolute_error": 3.250903606414795,
+          "last_position_mean_absolute_error": 0.03786194324493408,
+          "last_position_max_absolute_error": 0.2332448959350586,
+          "argmax_agreement": "930/937",
+          "disagreements": [
+            {
+              "position": 72,
+              "reference_token": " future",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.027406692504882812
+            },
+            {
+              "position": 169,
+              "reference_token": ".\n\n",
+              "candidate_token": ".",
+              "reference_top_2_gap": 0.0506744384765625
+            },
+            {
+              "position": 237,
+              "reference_token": " since",
+              "candidate_token": " cache",
+              "reference_top_2_gap": 0.0036334991455078125
+            },
+            {
+              "position": 247,
+              "reference_token": "ical",
+              "candidate_token": "ous",
+              "reference_top_2_gap": 0.04101753234863281
+            },
+            {
+              "position": 261,
+              "reference_token": " can",
+              "candidate_token": " is",
+              "reference_top_2_gap": 0.024450302124023438
+            },
+            {
+              "position": 280,
+              "reference_token": " embedding",
+              "candidate_token": " offset",
+              "reference_top_2_gap": 0.05617809295654297
+            },
+            {
+              "position": 313,
+              "reference_token": " transformer",
+              "candidate_token": " model",
+              "reference_top_2_gap": 0.06276321411132812
+            }
+          ]
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.029089152812957764,
+          "max_absolute_error": 1.9278974533081055,
+          "last_position_mean_absolute_error": 0.034615226089954376,
+          "last_position_max_absolute_error": 0.2478775978088379,
+          "argmax_agreement": "928/937",
+          "disagreements": [
+            {
+              "position": 72,
+              "reference_token": " the",
+              "candidate_token": " future",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 103,
+              "reference_token": " the",
+              "candidate_token": " these",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 131,
+              "reference_token": " are",
+              "candidate_token": " add",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 133,
+              "reference_token": " in",
+              "candidate_token": " information",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 169,
+              "reference_token": ".",
+              "candidate_token": ".\n\n",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 189,
+              "reference_token": " sequence",
+              "candidate_token": " dataset",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 210,
+              "reference_token": " re",
+              "candidate_token": " uses",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 247,
+              "reference_token": "ous",
+              "candidate_token": "ical",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 261,
+              "reference_token": " is",
+              "candidate_token": " can",
+              "reference_top_2_gap": 0.0
+            }
+          ]
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.03527442738413811,
+          "max_absolute_error": 4.546875,
+          "last_position_mean_absolute_error": 0.045790255069732666,
+          "last_position_max_absolute_error": 0.27166748046875,
+          "argmax_agreement": "929/937",
+          "disagreements": [
+            {
+              "position": 103,
+              "reference_token": " the",
+              "candidate_token": " these",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 131,
+              "reference_token": " are",
+              "candidate_token": " add",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 133,
+              "reference_token": " in",
+              "candidate_token": " information",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 189,
+              "reference_token": " sequence",
+              "candidate_token": " dataset",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 210,
+              "reference_token": " re",
+              "candidate_token": " uses",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 237,
+              "reference_token": " since",
+              "candidate_token": " cache",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 280,
+              "reference_token": " embedding",
+              "candidate_token": " offset",
+              "reference_top_2_gap": 0.1875
+            },
+            {
+              "position": 313,
+              "reference_token": " transformer",
+              "candidate_token": " model",
+              "reference_top_2_gap": 0.0625
+            }
+          ]
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.02956322766840458,
+          "max_absolute_error": 3.2509937286376953,
+          "last_position_mean_absolute_error": 0.03786415979266167,
+          "last_position_max_absolute_error": 0.23326873779296875,
+          "argmax_agreement": "930/937",
+          "disagreements": [
+            {
+              "position": 72,
+              "reference_token": " future",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.027402877807617188
+            },
+            {
+              "position": 169,
+              "reference_token": ".\n\n",
+              "candidate_token": ".",
+              "reference_top_2_gap": 0.05071067810058594
+            },
+            {
+              "position": 237,
+              "reference_token": " since",
+              "candidate_token": " cache",
+              "reference_top_2_gap": 0.0036678314208984375
+            },
+            {
+              "position": 247,
+              "reference_token": "ical",
+              "candidate_token": "ous",
+              "reference_top_2_gap": 0.04106330871582031
+            },
+            {
+              "position": 261,
+              "reference_token": " can",
+              "candidate_token": " is",
+              "reference_top_2_gap": 0.024478912353515625
+            },
+            {
+              "position": 280,
+              "reference_token": " embedding",
+              "candidate_token": " offset",
+              "reference_top_2_gap": 0.056168556213378906
+            },
+            {
+              "position": 313,
+              "reference_token": " transformer",
+              "candidate_token": " model",
+              "reference_top_2_gap": 0.06275463104248047
+            }
+          ]
+        }
+      }
+    }
+  },
+  "location": "modal"
+}
+Saved report: /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/output_logs/9_6_2026/15_23_42_228065_baseline_8b_modal.json
+Saved CLI output: /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/output_logs/9_6_2026/15_23_42_228065_baseline_8b_modal.log

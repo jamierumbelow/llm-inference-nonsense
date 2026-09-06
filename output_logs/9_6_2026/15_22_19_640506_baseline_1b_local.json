@@ -1,0 +1,2349 @@
+{
+  "experiment": "baseline",
+  "model": "1b",
+  "checkpoint": "/Users/jamierumbelow/.cache/huggingface/hub/models--meta-llama--Llama-3.2-1B-Instruct/snapshots/9213176726f574b556790deb65791e0c5aa438b6",
+  "torch_version": "2.14.0",
+  "device": "cpu",
+  "gpu": null,
+  "attention_backend": "SDPA math",
+  "float32_matmul_precision": "highest",
+  "use_cache": false,
+  "prompts": {
+    "one_token": {
+      "text": "",
+      "token_ids": [
+        [
+          128000
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 16309,
+              "text": "Tags",
+              "logit": 7.0284953117370605
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 7.026835918426514
+            },
+            {
+              "id": 791,
+              "text": "The",
+              "logit": 6.537420272827148
+            },
+            {
+              "id": 1340,
+              "text": "<?",
+              "logit": 6.5307936668396
+            },
+            {
+              "id": 475,
+              "text": "import",
+              "logit": 6.504459381103516
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 16309,
+              "text": "Tags",
+              "logit": 7.03125
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 7.0
+            },
+            {
+              "id": 1340,
+              "text": "<?",
+              "logit": 6.53125
+            },
+            {
+              "id": 791,
+              "text": "The",
+              "logit": 6.5
+            },
+            {
+              "id": 475,
+              "text": "import",
+              "logit": 6.5
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 16309,
+              "text": "Tags",
+              "logit": 7.0284953117370605
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 7.026835918426514
+            },
+            {
+              "id": 791,
+              "text": "The",
+              "logit": 6.537420272827148
+            },
+            {
+              "id": 1340,
+              "text": "<?",
+              "logit": 6.5307936668396
+            },
+            {
+              "id": 475,
+              "text": "import",
+              "logit": 6.504459381103516
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            1,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 16309,
+              "text": "Tags",
+              "logit": 7.0
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 6.96875
+            },
+            {
+              "id": 1340,
+              "text": "<?",
+              "logit": 6.5
+            },
+            {
+              "id": 791,
+              "text": "The",
+              "logit": 6.46875
+            },
+            {
+              "id": 475,
+              "text": "import",
+              "logit": 6.46875
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.012714609503746033,
+          "max_absolute_error": 0.0818789005279541,
+          "last_position_mean_absolute_error": 0.012714609503746033,
+          "last_position_max_absolute_error": 0.0818789005279541,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 0.0,
+          "max_absolute_error": 0.0,
+          "last_position_mean_absolute_error": 0.0,
+          "last_position_max_absolute_error": 0.0,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.012774012982845306,
+          "max_absolute_error": 0.0908212661743164,
+          "last_position_mean_absolute_error": 0.012774012982845306,
+          "last_position_max_absolute_error": 0.0908212661743164,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.012714609503746033,
+          "max_absolute_error": 0.0818789005279541,
+          "last_position_mean_absolute_error": 0.012714609503746033,
+          "last_position_max_absolute_error": 0.0818789005279541,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.00849191565066576,
+          "max_absolute_error": 0.0625,
+          "last_position_mean_absolute_error": 0.00849191565066576,
+          "last_position_max_absolute_error": 0.0625,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.012774012982845306,
+          "max_absolute_error": 0.0908212661743164,
+          "last_position_mean_absolute_error": 0.012774012982845306,
+          "last_position_max_absolute_error": 0.0908212661743164,
+          "argmax_agreement": "1/1",
+          "disagreements": []
+        }
+      }
+    },
+    "sentence": {
+      "text": "The present King of France is",
+      "token_ids": [
+        [
+          128000,
+          791,
+          3118,
+          6342,
+          315,
+          9822,
+          374
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.3660831451416
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.607439994812012
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.205832481384277
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.029139518737793
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.027528762817383
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.375
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.625
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.1875
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.0625
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.0
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.3660831451416
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.607439994812012
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.205832481384277
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.029139518737793
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.027528762817383
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.375
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.625
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.25
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.0625
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.0625
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.016216184943914413,
+          "max_absolute_error": 0.15844106674194336,
+          "last_position_mean_absolute_error": 0.018606342375278473,
+          "last_position_max_absolute_error": 0.11216115951538086,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 0.0,
+          "max_absolute_error": 0.0,
+          "last_position_mean_absolute_error": 0.0,
+          "last_position_max_absolute_error": 0.0,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.016129227355122566,
+          "max_absolute_error": 0.12817475199699402,
+          "last_position_mean_absolute_error": 0.015188452787697315,
+          "last_position_max_absolute_error": 0.0911327600479126,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.016216184943914413,
+          "max_absolute_error": 0.15844106674194336,
+          "last_position_mean_absolute_error": 0.018606342375278473,
+          "last_position_max_absolute_error": 0.11216115951538086,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.018232209607958794,
+          "max_absolute_error": 0.1875,
+          "last_position_mean_absolute_error": 0.020076023414731026,
+          "last_position_max_absolute_error": 0.125,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.016129227355122566,
+          "max_absolute_error": 0.12817475199699402,
+          "last_position_mean_absolute_error": 0.015188452787697315,
+          "last_position_max_absolute_error": 0.0911327600479126,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        }
+      }
+    },
+    "code": {
+      "text": "def fibonacci(n: int) -> int:\n    if n < 2:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n",
+      "token_ids": [
+        [
+          128000,
+          755,
+          76798,
+          1471,
+          25,
+          528,
+          8,
+          1492,
+          528,
+          512,
+          262,
+          422,
+          308,
+          366,
+          220,
+          17,
+          512,
+          286,
+          471,
+          308,
+          198,
+          262,
+          471,
+          76798,
+          1471,
+          482,
+          220,
+          16,
+          8,
+          489,
+          76798,
+          1471,
+          482,
+          220,
+          17,
+          340
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14196,
+              "text": "``",
+              "logit": 20.703462600708008
+            },
+            {
+              "id": 262,
+              "text": "   ",
+              "logit": 20.060161590576172
+            },
+            {
+              "id": 74694,
+              "text": "```",
+              "logit": 20.00005531311035
+            },
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 19.448991775512695
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 19.192291259765625
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14196,
+              "text": "``",
+              "logit": 20.875
+            },
+            {
+              "id": 74694,
+              "text": "```",
+              "logit": 20.125
+            },
+            {
+              "id": 262,
+              "text": "   ",
+              "logit": 20.125
+            },
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 19.5
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 19.25
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14196,
+              "text": "``",
+              "logit": 20.703462600708008
+            },
+            {
+              "id": 262,
+              "text": "   ",
+              "logit": 20.060161590576172
+            },
+            {
+              "id": 74694,
+              "text": "```",
+              "logit": 20.00005531311035
+            },
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 19.448991775512695
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 19.192291259765625
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            36,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 14196,
+              "text": "``",
+              "logit": 20.625
+            },
+            {
+              "id": 74694,
+              "text": "```",
+              "logit": 20.0
+            },
+            {
+              "id": 262,
+              "text": "   ",
+              "logit": 20.0
+            },
+            {
+              "id": 1084,
+              "text": "    \n",
+              "logit": 19.375
+            },
+            {
+              "id": 2,
+              "text": "#",
+              "logit": 19.125
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.045035477727651596,
+          "max_absolute_error": 0.37035179138183594,
+          "last_position_mean_absolute_error": 0.024509519338607788,
+          "last_position_max_absolute_error": 0.1715373992919922,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 0.0,
+          "max_absolute_error": 0.0,
+          "last_position_mean_absolute_error": 0.0,
+          "last_position_max_absolute_error": 0.0,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.05078952759504318,
+          "max_absolute_error": 0.41150856018066406,
+          "last_position_mean_absolute_error": 0.02521076612174511,
+          "last_position_max_absolute_error": 0.15837621688842773,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.045035477727651596,
+          "max_absolute_error": 0.37035179138183594,
+          "last_position_mean_absolute_error": 0.024509519338607788,
+          "last_position_max_absolute_error": 0.1715373992919922,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.04008912295103073,
+          "max_absolute_error": 0.375,
+          "last_position_mean_absolute_error": 0.02778221108019352,
+          "last_position_max_absolute_error": 0.25,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.05078952759504318,
+          "max_absolute_error": 0.41150856018066406,
+          "last_position_mean_absolute_error": 0.02521076612174511,
+          "last_position_max_absolute_error": 0.15837621688842773,
+          "argmax_agreement": "36/36",
+          "disagreements": []
+        }
+      }
+    },
+    "maths": {
+      "text": "If 3x + 7 = 31, solve for x and then calculate x squared plus 2x.",
+      "token_ids": [
+        [
+          128000,
+          2746,
+          220,
+          18,
+          87,
+          489,
+          220,
+          22,
+          284,
+          220,
+          2148,
+          11,
+          11886,
+          369,
+          865,
+          323,
+          1243,
+          11294,
+          865,
+          53363,
+          5636,
+          220,
+          17,
+          87,
+          13
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 17.867008209228516
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 17.35825538635254
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.635480880737305
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 16.493562698364258
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 16.3043212890625
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 17.875
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 17.375
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.625
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 16.5
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 16.25
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 17.867008209228516
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 17.35825538635254
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.635480880737305
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 16.493562698364258
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 16.3043212890625
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            25,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 17.875
+            },
+            {
+              "id": 720,
+              "text": " \n",
+              "logit": 17.375
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.625
+            },
+            {
+              "id": 1115,
+              "text": " This",
+              "logit": 16.5
+            },
+            {
+              "id": 220,
+              "text": " ",
+              "logit": 16.375
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.02448267489671707,
+          "max_absolute_error": 0.2707376480102539,
+          "last_position_mean_absolute_error": 0.02210301160812378,
+          "last_position_max_absolute_error": 0.12709999084472656,
+          "argmax_agreement": "24/25",
+          "disagreements": [
+            {
+              "position": 9,
+              "reference_token": "15",
+              "candidate_token": "14",
+              "reference_top_2_gap": 0.0009632110595703125
+            }
+          ]
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 0.0,
+          "max_absolute_error": 0.0,
+          "last_position_mean_absolute_error": 0.0,
+          "last_position_max_absolute_error": 0.0,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.02302437275648117,
+          "max_absolute_error": 0.2037816047668457,
+          "last_position_mean_absolute_error": 0.033426955342292786,
+          "last_position_max_absolute_error": 0.2037816047668457,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.02448267489671707,
+          "max_absolute_error": 0.2707376480102539,
+          "last_position_mean_absolute_error": 0.02210301160812378,
+          "last_position_max_absolute_error": 0.12709999084472656,
+          "argmax_agreement": "24/25",
+          "disagreements": [
+            {
+              "position": 9,
+              "reference_token": "14",
+              "candidate_token": "15",
+              "reference_top_2_gap": 0.125
+            }
+          ]
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.030232850462198257,
+          "max_absolute_error": 0.28125,
+          "last_position_mean_absolute_error": 0.04581204801797867,
+          "last_position_max_absolute_error": 0.28125,
+          "argmax_agreement": "24/25",
+          "disagreements": [
+            {
+              "position": 9,
+              "reference_token": "14",
+              "candidate_token": "15",
+              "reference_top_2_gap": 0.125
+            }
+          ]
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.02302437275648117,
+          "max_absolute_error": 0.2037816047668457,
+          "last_position_mean_absolute_error": 0.033426955342292786,
+          "last_position_max_absolute_error": 0.2037816047668457,
+          "argmax_agreement": "25/25",
+          "disagreements": []
+        }
+      }
+    },
+    "long_passage": {
+      "text": "A language model turns token identifiers into vectors and passes those vectors through a stack of transformer layers. Each layer first mixes information between positions with causal attention, then transforms each position independently with a feed-forward network. Residual connections carry the previous representation around both operations, while normalization keeps the scale of the activations controlled.\n\nDuring inference, causal attention prevents a token from seeing anything to its right. The query at a position is compared with keys from the visible prefix, the resulting scores are normalized, and the values are combined using those weights. Grouped-query attention lets several query heads share one key and value head, reducing memory use during decoding.\n\nRotary position embeddings encode position by rotating pairs of query and key coordinates. The rotation angle changes with both position and frequency. Llama adjusts some of these frequencies so that the model can operate beyond the context length used by the original schedule, while leaving the high-frequency components largely unchanged.\n\nThe first call over a prompt is usually called prefill. A production engine stores the keys and values produced during prefill, then processes one new token at a time without repeating the earlier projections. This key-value cache saves computation but creates new questions about memory layout, allocation, batching, and movement between devices.\n\nNumerical comparisons are useful because a transformer contains many individually simple operations whose composition is easy to get subtly wrong. A misplaced reshape, an incorrect head grouping, or a positional frequency error quickly changes logits throughout the model. Small floating-point differences are expected, so correctness must be judged in relation to the precision and execution backend being used.\n\nA language model turns token identifiers into vectors and passes those vectors through a stack of transformer layers. Each layer first mixes information between positions with causal attention, then transforms each position independently with a feed-forward network. Residual connections carry the previous representation around both operations, while normalization keeps the scale of the activations controlled.\n\nDuring inference, causal attention prevents a token from seeing anything to its right. The query at a position is compared with keys from the visible prefix, the resulting scores are normalized, and the values are combined using those weights. Grouped-query attention lets several query heads share one key and value head, reducing memory use during decoding.\n\nRotary position embeddings encode position by rotating pairs of query and key coordinates. The rotation angle changes with both position and frequency. Llama adjusts some of these frequencies so that the model can operate beyond the context length used by the original schedule, while leaving the high-frequency components largely unchanged.\n\nThe first call over a prompt is usually called prefill. A production engine stores the keys and values produced during prefill, then processes one new token at a time without repeating the earlier projections. This key-value cache saves computation but creates new questions about memory layout, allocation, batching, and movement between devices.\n\nNumerical comparisons are useful because a transformer contains many individually simple operations whose composition is easy to get subtly wrong. A misplaced reshape, an incorrect head grouping, or a positional frequency error quickly changes logits throughout the model. Small floating-point differences are expected, so correctness must be judged in relation to the precision and execution backend being used.\n\nA language model turns token identifiers into vectors and passes those vectors through a stack of transformer layers. Each layer first mixes information between positions with causal attention, then transforms each position independently with a feed-forward network. Residual connections carry the previous representation around both operations, while normalization keeps the scale of the activations controlled.\n\nDuring inference, causal attention prevents a token from seeing anything to its right. The query at a position is compared with keys from the visible prefix, the resulting scores are normalized, and the values are combined using those weights. Grouped-query attention lets several query heads share one key and value head, reducing memory use during decoding.\n\nRotary position embeddings encode position by rotating pairs of query and key coordinates. The rotation angle changes with both position and frequency. Llama adjusts some of these frequencies so that the model can operate beyond the context length used by the original schedule, while leaving the high-frequency components largely unchanged.\n\nThe first call over a prompt is usually called prefill. A production engine stores the keys and values produced during prefill, then processes one new token at a time without repeating the earlier projections. This key-value cache saves computation but creates new questions about memory layout, allocation, batching, and movement between devices.\n\nNumerical comparisons are useful because a transformer contains many individually simple operations whose composition is easy to get subtly wrong. A misplaced reshape, an incorrect head grouping, or a positional frequency error quickly changes logits throughout the model. Small floating-point differences are expected, so correctness must be judged in relation to the precision and execution backend being used.",
+      "token_ids": [
+        [
+          128000,
+          32,
+          4221,
+          1646,
+          10800,
+          4037,
+          48316,
+          1139,
+          23728,
+          323,
+          16609,
+          1884,
+          23728,
+          1555,
+          264,
+          5729,
+          315,
+          43678,
+          13931,
+          13,
+          9062,
+          6324,
+          1176,
+          63526,
+          2038,
+          1990,
+          10093,
+          449,
+          59557,
+          6666,
+          11,
+          1243,
+          29575,
+          1855,
+          2361,
+          29235,
+          449,
+          264,
+          5510,
+          45904,
+          4009,
+          13,
+          1838,
+          3421,
+          13537,
+          6920,
+          279,
+          3766,
+          13340,
+          2212,
+          2225,
+          7677,
+          11,
+          1418,
+          49823,
+          13912,
+          279,
+          5569,
+          315,
+          279,
+          93595,
+          14400,
+          382,
+          16397,
+          45478,
+          11,
+          59557,
+          6666,
+          29034,
+          264,
+          4037,
+          505,
+          9298,
+          4205,
+          311,
+          1202,
+          1314,
+          13,
+          578,
+          3319,
+          520,
+          264,
+          2361,
+          374,
+          7863,
+          449,
+          7039,
+          505,
+          279,
+          9621,
+          9436,
+          11,
+          279,
+          13239,
+          12483,
+          527,
+          30510,
+          11,
+          323,
+          279,
+          2819,
+          527,
+          11093,
+          1701,
+          1884,
+          14661,
+          13,
+          5856,
+          291,
+          66589,
+          6666,
+          15714,
+          3892,
+          3319,
+          14971,
+          4430,
+          832,
+          1401,
+          323,
+          907,
+          2010,
+          11,
+          18189,
+          5044,
+          1005,
+          2391,
+          48216,
+          382,
+          38036,
+          661,
+          2361,
+          71647,
+          16559,
+          2361,
+          555,
+          42496,
+          13840,
+          315,
+          3319,
+          323,
+          1401,
+          14259,
+          13,
+          578,
+          12984,
+          9392,
+          4442,
+          449,
+          2225,
+          2361,
+          323,
+          11900,
+          13,
+          445,
+          81101,
+          84431,
+          1063,
+          315,
+          1521,
+          34873,
+          779,
+          430,
+          279,
+          1646,
+          649,
+          14816,
+          7953,
+          279,
+          2317,
+          3160,
+          1511,
+          555,
+          279,
+          4113,
+          9899,
+          11,
+          1418,
+          9564,
+          279,
+          1579,
+          79412,
+          6956,
+          14090,
+          35957,
+          382,
+          791,
+          1176,
+          1650,
+          927,
+          264,
+          10137,
+          374,
+          6118,
+          2663,
+          864,
+          7712,
+          13,
+          362,
+          5788,
+          4817,
+          10756,
+          279,
+          7039,
+          323,
+          2819,
+          9124,
+          2391,
+          864,
+          7712,
+          11,
+          1243,
+          11618,
+          832,
+          502,
+          4037,
+          520,
+          264,
+          892,
+          2085,
+          40916,
+          279,
+          6931,
+          41579,
+          13,
+          1115,
+          1401,
+          19625,
+          6636,
+          27024,
+          35547,
+          719,
+          11705,
+          502,
+          4860,
+          922,
+          5044,
+          6932,
+          11,
+          24691,
+          11,
+          85356,
+          11,
+          323,
+          7351,
+          1990,
+          7766,
+          382,
+          68837,
+          950,
+          36595,
+          527,
+          5505,
+          1606,
+          264,
+          43678,
+          5727,
+          1690,
+          32399,
+          4382,
+          7677,
+          6832,
+          18528,
+          374,
+          4228,
+          311,
+          636,
+          87417,
+          5076,
+          13,
+          362,
+          90660,
+          44909,
+          11,
+          459,
+          15465,
+          2010,
+          50284,
+          11,
+          477,
+          264,
+          68647,
+          11900,
+          1493,
+          6288,
+          4442,
+          61888,
+          6957,
+          279,
+          1646,
+          13,
+          15344,
+          19596,
+          16983,
+          12062,
+          527,
+          3685,
+          11,
+          779,
+          58423,
+          2011,
+          387,
+          45487,
+          304,
+          12976,
+          311,
+          279,
+          16437,
+          323,
+          11572,
+          19713,
+          1694,
+          1511,
+          382,
+          32,
+          4221,
+          1646,
+          10800,
+          4037,
+          48316,
+          1139,
+          23728,
+          323,
+          16609,
+          1884,
+          23728,
+          1555,
+          264,
+          5729,
+          315,
+          43678,
+          13931,
+          13,
+          9062,
+          6324,
+          1176,
+          63526,
+          2038,
+          1990,
+          10093,
+          449,
+          59557,
+          6666,
+          11,
+          1243,
+          29575,
+          1855,
+          2361,
+          29235,
+          449,
+          264,
+          5510,
+          45904,
+          4009,
+          13,
+          1838,
+          3421,
+          13537,
+          6920,
+          279,
+          3766,
+          13340,
+          2212,
+          2225,
+          7677,
+          11,
+          1418,
+          49823,
+          13912,
+          279,
+          5569,
+          315,
+          279,
+          93595,
+          14400,
+          382,
+          16397,
+          45478,
+          11,
+          59557,
+          6666,
+          29034,
+          264,
+          4037,
+          505,
+          9298,
+          4205,
+          311,
+          1202,
+          1314,
+          13,
+          578,
+          3319,
+          520,
+          264,
+          2361,
+          374,
+          7863,
+          449,
+          7039,
+          505,
+          279,
+          9621,
+          9436,
+          11,
+          279,
+          13239,
+          12483,
+          527,
+          30510,
+          11,
+          323,
+          279,
+          2819,
+          527,
+          11093,
+          1701,
+          1884,
+          14661,
+          13,
+          5856,
+          291,
+          66589,
+          6666,
+          15714,
+          3892,
+          3319,
+          14971,
+          4430,
+          832,
+          1401,
+          323,
+          907,
+          2010,
+          11,
+          18189,
+          5044,
+          1005,
+          2391,
+          48216,
+          382,
+          38036,
+          661,
+          2361,
+          71647,
+          16559,
+          2361,
+          555,
+          42496,
+          13840,
+          315,
+          3319,
+          323,
+          1401,
+          14259,
+          13,
+          578,
+          12984,
+          9392,
+          4442,
+          449,
+          2225,
+          2361,
+          323,
+          11900,
+          13,
+          445,
+          81101,
+          84431,
+          1063,
+          315,
+          1521,
+          34873,
+          779,
+          430,
+          279,
+          1646,
+          649,
+          14816,
+          7953,
+          279,
+          2317,
+          3160,
+          1511,
+          555,
+          279,
+          4113,
+          9899,
+          11,
+          1418,
+          9564,
+          279,
+          1579,
+          79412,
+          6956,
+          14090,
+          35957,
+          382,
+          791,
+          1176,
+          1650,
+          927,
+          264,
+          10137,
+          374,
+          6118,
+          2663,
+          864,
+          7712,
+          13,
+          362,
+          5788,
+          4817,
+          10756,
+          279,
+          7039,
+          323,
+          2819,
+          9124,
+          2391,
+          864,
+          7712,
+          11,
+          1243,
+          11618,
+          832,
+          502,
+          4037,
+          520,
+          264,
+          892,
+          2085,
+          40916,
+          279,
+          6931,
+          41579,
+          13,
+          1115,
+          1401,
+          19625,
+          6636,
+          27024,
+          35547,
+          719,
+          11705,
+          502,
+          4860,
+          922,
+          5044,
+          6932,
+          11,
+          24691,
+          11,
+          85356,
+          11,
+          323,
+          7351,
+          1990,
+          7766,
+          382,
+          68837,
+          950,
+          36595,
+          527,
+          5505,
+          1606,
+          264,
+          43678,
+          5727,
+          1690,
+          32399,
+          4382,
+          7677,
+          6832,
+          18528,
+          374,
+          4228,
+          311,
+          636,
+          87417,
+          5076,
+          13,
+          362,
+          90660,
+          44909,
+          11,
+          459,
+          15465,
+          2010,
+          50284,
+          11,
+          477,
+          264,
+          68647,
+          11900,
+          1493,
+          6288,
+          4442,
+          61888,
+          6957,
+          279,
+          1646,
+          13,
+          15344,
+          19596,
+          16983,
+          12062,
+          527,
+          3685,
+          11,
+          779,
+          58423,
+          2011,
+          387,
+          45487,
+          304,
+          12976,
+          311,
+          279,
+          16437,
+          323,
+          11572,
+          19713,
+          1694,
+          1511,
+          382,
+          32,
+          4221,
+          1646,
+          10800,
+          4037,
+          48316,
+          1139,
+          23728,
+          323,
+          16609,
+          1884,
+          23728,
+          1555,
+          264,
+          5729,
+          315,
+          43678,
+          13931,
+          13,
+          9062,
+          6324,
+          1176,
+          63526,
+          2038,
+          1990,
+          10093,
+          449,
+          59557,
+          6666,
+          11,
+          1243,
+          29575,
+          1855,
+          2361,
+          29235,
+          449,
+          264,
+          5510,
+          45904,
+          4009,
+          13,
+          1838,
+          3421,
+          13537,
+          6920,
+          279,
+          3766,
+          13340,
+          2212,
+          2225,
+          7677,
+          11,
+          1418,
+          49823,
+          13912,
+          279,
+          5569,
+          315,
+          279,
+          93595,
+          14400,
+          382,
+          16397,
+          45478,
+          11,
+          59557,
+          6666,
+          29034,
+          264,
+          4037,
+          505,
+          9298,
+          4205,
+          311,
+          1202,
+          1314,
+          13,
+          578,
+          3319,
+          520,
+          264,
+          2361,
+          374,
+          7863,
+          449,
+          7039,
+          505,
+          279,
+          9621,
+          9436,
+          11,
+          279,
+          13239,
+          12483,
+          527,
+          30510,
+          11,
+          323,
+          279,
+          2819,
+          527,
+          11093,
+          1701,
+          1884,
+          14661,
+          13,
+          5856,
+          291,
+          66589,
+          6666,
+          15714,
+          3892,
+          3319,
+          14971,
+          4430,
+          832,
+          1401,
+          323,
+          907,
+          2010,
+          11,
+          18189,
+          5044,
+          1005,
+          2391,
+          48216,
+          382,
+          38036,
+          661,
+          2361,
+          71647,
+          16559,
+          2361,
+          555,
+          42496,
+          13840,
+          315,
+          3319,
+          323,
+          1401,
+          14259,
+          13,
+          578,
+          12984,
+          9392,
+          4442,
+          449,
+          2225,
+          2361,
+          323,
+          11900,
+          13,
+          445,
+          81101,
+          84431,
+          1063,
+          315,
+          1521,
+          34873,
+          779,
+          430,
+          279,
+          1646,
+          649,
+          14816,
+          7953,
+          279,
+          2317,
+          3160,
+          1511,
+          555,
+          279,
+          4113,
+          9899,
+          11,
+          1418,
+          9564,
+          279,
+          1579,
+          79412,
+          6956,
+          14090,
+          35957,
+          382,
+          791,
+          1176,
+          1650,
+          927,
+          264,
+          10137,
+          374,
+          6118,
+          2663,
+          864,
+          7712,
+          13,
+          362,
+          5788,
+          4817,
+          10756,
+          279,
+          7039,
+          323,
+          2819,
+          9124,
+          2391,
+          864,
+          7712,
+          11,
+          1243,
+          11618,
+          832,
+          502,
+          4037,
+          520,
+          264,
+          892,
+          2085,
+          40916,
+          279,
+          6931,
+          41579,
+          13,
+          1115,
+          1401,
+          19625,
+          6636,
+          27024,
+          35547,
+          719,
+          11705,
+          502,
+          4860,
+          922,
+          5044,
+          6932,
+          11,
+          24691,
+          11,
+          85356,
+          11,
+          323,
+          7351,
+          1990,
+          7766,
+          382,
+          68837,
+          950,
+          36595,
+          527,
+          5505,
+          1606,
+          264,
+          43678,
+          5727,
+          1690,
+          32399,
+          4382,
+          7677,
+          6832,
+          18528,
+          374,
+          4228,
+          311,
+          636,
+          87417,
+          5076,
+          13,
+          362,
+          90660,
+          44909,
+          11,
+          459,
+          15465,
+          2010,
+          50284,
+          11,
+          477,
+          264,
+          68647,
+          11900,
+          1493,
+          6288,
+          4442,
+          61888,
+          6957,
+          279,
+          1646,
+          13,
+          15344,
+          19596,
+          16983,
+          12062,
+          527,
+          3685,
+          11,
+          779,
+          58423,
+          2011,
+          387,
+          45487,
+          304,
+          12976,
+          311,
+          279,
+          16437,
+          323,
+          11572,
+          19713,
+          1694,
+          1511,
+          13
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 128009,
+              "text": "<|eot_id|>",
+              "logit": 21.14769172668457
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 18.153440475463867
+            },
+            {
+              "id": 128008,
+              "text": "<|eom_id|>",
+              "logit": 17.401824951171875
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 16.72821807861328
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.631380081176758
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 128009,
+              "text": "<|eot_id|>",
+              "logit": 21.125
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 18.125
+            },
+            {
+              "id": 128008,
+              "text": "<|eom_id|>",
+              "logit": 17.375
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.625
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 16.625
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 128009,
+              "text": "<|eot_id|>",
+              "logit": 21.14769172668457
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 18.153440475463867
+            },
+            {
+              "id": 128008,
+              "text": "<|eom_id|>",
+              "logit": 17.401824951171875
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 16.72821807861328
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.631380081176758
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            937,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 128009,
+              "text": "<|eot_id|>",
+              "logit": 21.125
+            },
+            {
+              "id": 4815,
+              "text": " \n\n",
+              "logit": 18.125
+            },
+            {
+              "id": 128008,
+              "text": "<|eom_id|>",
+              "logit": 17.375
+            },
+            {
+              "id": 578,
+              "text": " The",
+              "logit": 16.625
+            },
+            {
+              "id": 362,
+              "text": " A",
+              "logit": 16.625
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.024358704686164856,
+          "max_absolute_error": 0.35044193267822266,
+          "last_position_mean_absolute_error": 0.03653919696807861,
+          "last_position_max_absolute_error": 0.20018930733203888,
+          "argmax_agreement": "926/937",
+          "disagreements": [
+            {
+              "position": 4,
+              "reference_token": " into",
+              "candidate_token": " on",
+              "reference_top_2_gap": 0.03018951416015625
+            },
+            {
+              "position": 9,
+              "reference_token": " uses",
+              "candidate_token": " then",
+              "reference_top_2_gap": 0.023571014404296875
+            },
+            {
+              "position": 45,
+              "reference_token": " information",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.04732704162597656
+            },
+            {
+              "position": 46,
+              "reference_token": " difference",
+              "candidate_token": " output",
+              "reference_top_2_gap": 0.04138755798339844
+            },
+            {
+              "position": 162,
+              "reference_token": " rotation",
+              "candidate_token": " model",
+              "reference_top_2_gap": 0.0072650909423828125
+            },
+            {
+              "position": 220,
+              "reference_token": " computation",
+              "candidate_token": " pre",
+              "reference_top_2_gap": 0.05640411376953125
+            },
+            {
+              "position": 260,
+              "reference_token": " outputs",
+              "candidate_token": " inputs",
+              "reference_top_2_gap": 0.016206741333007812
+            },
+            {
+              "position": 280,
+              "reference_token": " mismatch",
+              "candidate_token": " error",
+              "reference_top_2_gap": 0.023476600646972656
+            },
+            {
+              "position": 289,
+              "reference_token": " Therefore",
+              "candidate_token": " The",
+              "reference_top_2_gap": 0.04941844940185547
+            },
+            {
+              "position": 290,
+              "reference_token": " errors",
+              "candidate_token": " changes",
+              "reference_top_2_gap": 0.025634765625
+            },
+            {
+              "position": 294,
+              "reference_token": " hard",
+              "candidate_token": " also",
+              "reference_top_2_gap": 0.016826629638671875
+            }
+          ]
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 0.0,
+          "max_absolute_error": 0.0,
+          "last_position_mean_absolute_error": 0.0,
+          "last_position_max_absolute_error": 0.0,
+          "argmax_agreement": "937/937",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.023071853443980217,
+          "max_absolute_error": 0.30414390563964844,
+          "last_position_mean_absolute_error": 0.018028246238827705,
+          "last_position_max_absolute_error": 0.16531991958618164,
+          "argmax_agreement": "926/937",
+          "disagreements": [
+            {
+              "position": 4,
+              "reference_token": " into",
+              "candidate_token": " on",
+              "reference_top_2_gap": 0.03018951416015625
+            },
+            {
+              "position": 9,
+              "reference_token": " uses",
+              "candidate_token": " then",
+              "reference_top_2_gap": 0.023571014404296875
+            },
+            {
+              "position": 25,
+              "reference_token": " tokens",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.0472259521484375
+            },
+            {
+              "position": 35,
+              "reference_token": " using",
+              "candidate_token": ".",
+              "reference_top_2_gap": 0.05957221984863281
+            },
+            {
+              "position": 46,
+              "reference_token": " difference",
+              "candidate_token": " output",
+              "reference_top_2_gap": 0.04138755798339844
+            },
+            {
+              "position": 162,
+              "reference_token": " rotation",
+              "candidate_token": " model",
+              "reference_top_2_gap": 0.0072650909423828125
+            },
+            {
+              "position": 260,
+              "reference_token": " outputs",
+              "candidate_token": " inputs",
+              "reference_top_2_gap": 0.016206741333007812
+            },
+            {
+              "position": 280,
+              "reference_token": " mismatch",
+              "candidate_token": " error",
+              "reference_top_2_gap": 0.023476600646972656
+            },
+            {
+              "position": 289,
+              "reference_token": " Therefore",
+              "candidate_token": " The",
+              "reference_top_2_gap": 0.04941844940185547
+            },
+            {
+              "position": 290,
+              "reference_token": " errors",
+              "candidate_token": " changes",
+              "reference_top_2_gap": 0.025634765625
+            },
+            {
+              "position": 294,
+              "reference_token": " hard",
+              "candidate_token": " also",
+              "reference_top_2_gap": 0.016826629638671875
+            }
+          ]
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.024358704686164856,
+          "max_absolute_error": 0.35044193267822266,
+          "last_position_mean_absolute_error": 0.03653919696807861,
+          "last_position_max_absolute_error": 0.20018930733203888,
+          "argmax_agreement": "926/937",
+          "disagreements": [
+            {
+              "position": 4,
+              "reference_token": " on",
+              "candidate_token": " into",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 9,
+              "reference_token": " then",
+              "candidate_token": " uses",
+              "reference_top_2_gap": 0.125
+            },
+            {
+              "position": 45,
+              "reference_token": " the",
+              "candidate_token": " information",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 46,
+              "reference_token": " output",
+              "candidate_token": " difference",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 162,
+              "reference_token": " model",
+              "candidate_token": " rotation",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 220,
+              "reference_token": " pre",
+              "candidate_token": " computation",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 260,
+              "reference_token": " inputs",
+              "candidate_token": " outputs",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 280,
+              "reference_token": " error",
+              "candidate_token": " mismatch",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 289,
+              "reference_token": " The",
+              "candidate_token": " Therefore",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 290,
+              "reference_token": " changes",
+              "candidate_token": " errors",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 294,
+              "reference_token": " also",
+              "candidate_token": " hard",
+              "reference_top_2_gap": 0.0
+            }
+          ]
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.029278745874762535,
+          "max_absolute_error": 0.5,
+          "last_position_mean_absolute_error": 0.03384709730744362,
+          "last_position_max_absolute_error": 0.15625,
+          "argmax_agreement": "933/937",
+          "disagreements": [
+            {
+              "position": 25,
+              "reference_token": " tokens",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.125
+            },
+            {
+              "position": 35,
+              "reference_token": " using",
+              "candidate_token": ".",
+              "reference_top_2_gap": 0.125
+            },
+            {
+              "position": 45,
+              "reference_token": " the",
+              "candidate_token": " information",
+              "reference_top_2_gap": 0.0
+            },
+            {
+              "position": 220,
+              "reference_token": " pre",
+              "candidate_token": " computation",
+              "reference_top_2_gap": 0.0
+            }
+          ]
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.023071853443980217,
+          "max_absolute_error": 0.30414390563964844,
+          "last_position_mean_absolute_error": 0.018028246238827705,
+          "last_position_max_absolute_error": 0.16531991958618164,
+          "argmax_agreement": "926/937",
+          "disagreements": [
+            {
+              "position": 4,
+              "reference_token": " into",
+              "candidate_token": " on",
+              "reference_top_2_gap": 0.03018951416015625
+            },
+            {
+              "position": 9,
+              "reference_token": " uses",
+              "candidate_token": " then",
+              "reference_top_2_gap": 0.023571014404296875
+            },
+            {
+              "position": 25,
+              "reference_token": " tokens",
+              "candidate_token": " the",
+              "reference_top_2_gap": 0.0472259521484375
+            },
+            {
+              "position": 35,
+              "reference_token": " using",
+              "candidate_token": ".",
+              "reference_top_2_gap": 0.05957221984863281
+            },
+            {
+              "position": 46,
+              "reference_token": " difference",
+              "candidate_token": " output",
+              "reference_top_2_gap": 0.04138755798339844
+            },
+            {
+              "position": 162,
+              "reference_token": " rotation",
+              "candidate_token": " model",
+              "reference_top_2_gap": 0.0072650909423828125
+            },
+            {
+              "position": 260,
+              "reference_token": " outputs",
+              "candidate_token": " inputs",
+              "reference_top_2_gap": 0.016206741333007812
+            },
+            {
+              "position": 280,
+              "reference_token": " mismatch",
+              "candidate_token": " error",
+              "reference_top_2_gap": 0.023476600646972656
+            },
+            {
+              "position": 289,
+              "reference_token": " Therefore",
+              "candidate_token": " The",
+              "reference_top_2_gap": 0.04941844940185547
+            },
+            {
+              "position": 290,
+              "reference_token": " errors",
+              "candidate_token": " changes",
+              "reference_top_2_gap": 0.025634765625
+            },
+            {
+              "position": 294,
+              "reference_token": " hard",
+              "candidate_token": " also",
+              "reference_top_2_gap": 0.016826629638671875
+            }
+          ]
+        }
+      }
+    }
+  },
+  "location": "local"
+}

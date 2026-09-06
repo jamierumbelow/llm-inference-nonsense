@@ -1,5 +1,6 @@
 """Run model comparisons on Modal."""
 
+from collections.abc import Mapping
 from pathlib import Path
 
 import modal
@@ -11,6 +12,12 @@ from runner.config import MODAL_SECRET, MODAL_VOLUME
 
 ROOT = Path(__file__).resolve().parents[4]
 CACHE_PATH = "/checkpoints"
+EXPERIMENT_DIRS = sorted(
+    path for path in (ROOT / "experiments").iterdir() if (path / "pyproject.toml").exists()
+)
+PYTHONPATH = ["/app/packages/harness/src", "/app/packages/runner/src"] + [
+    f"/app/experiments/{path.name}/src" for path in EXPERIMENT_DIRS
+]
 
 # Install the locked workspace dependencies, then mount source for quick iteration.
 # Modal's Image.uv_sync helper does not currently support uv workspaces.
@@ -23,7 +30,7 @@ image = (
             "HF_HOME": CACHE_PATH,
             "UV_PROJECT_ENVIRONMENT": "/opt/venv",
             "PATH": "/opt/venv/bin:/usr/local/bin:/usr/bin:/bin",
-            "PYTHONPATH": "/app/packages/harness/src:/app/packages/runner/src",
+            "PYTHONPATH": ":".join(PYTHONPATH),
         }
     )
     .add_local_file(ROOT / "pyproject.toml", "/app/pyproject.toml", copy=True)
@@ -38,7 +45,15 @@ image = (
         "/app/packages/runner/pyproject.toml",
         copy=True,
     )
-    .run_commands("uv sync --frozen --no-install-workspace")
+)
+for experiment_dir in EXPERIMENT_DIRS:
+    image = image.add_local_file(
+        experiment_dir / "pyproject.toml",
+        f"/app/experiments/{experiment_dir.name}/pyproject.toml",
+        copy=True,
+    )
+image = (
+    image.run_commands("uv sync --frozen --no-install-workspace")
     .add_local_dir(
         ROOT / "packages/harness/src", "/app/packages/harness/src", ignore=["__pycache__"]
     )
@@ -46,6 +61,12 @@ image = (
         ROOT / "packages/runner/src", "/app/packages/runner/src", ignore=["__pycache__"]
     )
 )
+for experiment_dir in EXPERIMENT_DIRS:
+    image = image.add_local_dir(
+        experiment_dir / "src",
+        f"/app/experiments/{experiment_dir.name}/src",
+        ignore=["__pycache__"],
+    )
 
 app = modal.App("llm-inference-compare", image=image)
 cache = modal.Volume.from_name(MODAL_VOLUME)
@@ -72,13 +93,13 @@ def prepare_checkpoint(model: str) -> None:
     max_containers=1,
     scaledown_window=2,
 )
-def compare_on_gpu(model: str, prompt: str) -> dict:
+def compare_on_gpu(experiment: str, model: str, prompts: dict[str, str]) -> dict:
     cache.reload()
-    return compare(model, "cuda", prompt)
+    return compare(experiment, model, "cuda", prompts)
 
 
-def run(model: str, prompt: str) -> dict:
+def run(experiment: str, model: str, prompts: Mapping[str, str]) -> dict:
     with modal.enable_output(), app.run():
         # Download on CPU so GPU time is only used for the comparison.
         prepare_checkpoint.remote(model)
-        return compare_on_gpu.remote(model, prompt)
+        return compare_on_gpu.remote(experiment, model, dict(prompts))

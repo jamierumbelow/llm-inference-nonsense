@@ -2,6 +2,7 @@ import sys
 
 import modal
 from huggingface_hub import get_token
+
 from runner.config import MODAL_SECRET, MODAL_VOLUME
 
 

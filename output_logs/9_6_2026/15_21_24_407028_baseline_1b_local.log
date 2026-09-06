@@ -1,0 +1,234 @@
+$ uv run tools/compare_logits.py --experiment baseline --model 1b --location local
+Running transformers_fp32...
+Loading weights:   0%|          | 0/146 [00:00<?, ?it/s]Loading weights:   1%|          | 1/146 [00:04<10:57,  4.54s/it]Loading weights:  73%|#######3  | 107/146 [00:04<00:01, 32.19it/s]Loading weights: 100%|##########| 146/146 [00:05<00:00, 24.48it/s]
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+Running transformers_bf16...
+Loading weights:   0%|          | 0/146 [00:00<?, ?it/s]Loading weights: 100%|##########| 146/146 [00:00<00:00, 6114.88it/s]
+Running custom_fp32...
+Running custom_bf16...
+{
+  "experiment": "baseline",
+  "model": "1b",
+  "checkpoint": "/Users/jamierumbelow/.cache/huggingface/hub/models--meta-llama--Llama-3.2-1B-Instruct/snapshots/9213176726f574b556790deb65791e0c5aa438b6",
+  "torch_version": "2.14.0",
+  "device": "cpu",
+  "gpu": null,
+  "attention_backend": "SDPA math",
+  "float32_matmul_precision": "highest",
+  "use_cache": false,
+  "prompts": {
+    "prompt": {
+      "text": "The present King of France is",
+      "token_ids": [
+        [
+          128000,
+          791,
+          3118,
+          6342,
+          315,
+          9822,
+          374
+        ]
+      ],
+      "runs": {
+        "transformers_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.3660831451416
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.607439994812012
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.205832481384277
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.029139518737793
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.027528762817383
+            }
+          ]
+        },
+        "transformers_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.375
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.625
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.1875
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.0625
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.0
+            }
+          ]
+        },
+        "custom_fp32": {
+          "logit_dtype": "torch.float32",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.3660831451416
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.607439994812012
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.205832481384277
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.029139518737793
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.027528762817383
+            }
+          ]
+        },
+        "custom_bf16": {
+          "logit_dtype": "torch.bfloat16",
+          "shape": [
+            1,
+            7,
+            128256
+          ],
+          "all_finite": true,
+          "top_5_next_tokens": [
+            {
+              "id": 12140,
+              "text": " Louis",
+              "logit": 16.375
+            },
+            {
+              "id": 15274,
+              "text": " Charles",
+              "logit": 15.625
+            },
+            {
+              "id": 279,
+              "text": " the",
+              "logit": 15.25
+            },
+            {
+              "id": 264,
+              "text": " a",
+              "logit": 15.0625
+            },
+            {
+              "id": 6342,
+              "text": " King",
+              "logit": 15.0625
+            }
+          ]
+        }
+      },
+      "comparisons": {
+        "transformers_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.016216184943914413,
+          "max_absolute_error": 0.15844106674194336,
+          "last_position_mean_absolute_error": 0.018606342375278473,
+          "last_position_max_absolute_error": 0.11216115951538086,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_fp32": {
+          "mean_absolute_error": 0.0,
+          "max_absolute_error": 0.0,
+          "last_position_mean_absolute_error": 0.0,
+          "last_position_max_absolute_error": 0.0,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_fp32": {
+          "mean_absolute_error": 0.016129227355122566,
+          "max_absolute_error": 0.12817475199699402,
+          "last_position_mean_absolute_error": 0.015188452787697315,
+          "last_position_max_absolute_error": 0.0911327600479126,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_fp32_vs_transformers_bf16": {
+          "mean_absolute_error": 0.016216184943914413,
+          "max_absolute_error": 0.15844106674194336,
+          "last_position_mean_absolute_error": 0.018606342375278473,
+          "last_position_max_absolute_error": 0.11216115951538086,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_transformers_bf16": {
+          "mean_absolute_error": 0.018232209607958794,
+          "max_absolute_error": 0.1875,
+          "last_position_mean_absolute_error": 0.020076023414731026,
+          "last_position_max_absolute_error": 0.125,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        },
+        "custom_bf16_vs_custom_fp32": {
+          "mean_absolute_error": 0.016129227355122566,
+          "max_absolute_error": 0.12817475199699402,
+          "last_position_mean_absolute_error": 0.015188452787697315,
+          "last_position_max_absolute_error": 0.0911327600479126,
+          "argmax_agreement": "7/7",
+          "disagreements": []
+        }
+      }
+    }
+  },
+  "location": "local"
+}
+Saved report: /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/output_logs/9_6_2026/15_21_24_407028_baseline_1b_local.json
+Saved CLI output: /Users/jamierumbelow/workspace/repos/llm-inference-nonsense/output_logs/9_6_2026/15_21_24_407028_baseline_1b_local.log

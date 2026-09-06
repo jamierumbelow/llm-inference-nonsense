@@ -1,24 +1,29 @@
-"""Build a model and fill it from a cached checkpoint."""
+"""Fill an experiment's model definition from a cached checkpoint."""
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
+
 import torch
 from safetensors import safe_open
+from torch import nn
 
 from harness.config import LlamaConfig
-from harness.model import LlamaForCausalLM, rope_inv_freq
 from harness.profiles import ModelProfile, get_profile
 
 
-def load_model(
+def load_model[ModelT: nn.Module](
+    build_model: Callable[[LlamaConfig], ModelT],
     profile: str | ModelProfile,
     device: str | torch.device = "cpu",
     dtype: torch.dtype = torch.bfloat16,
-) -> LlamaForCausalLM:
-    """Load a profile's weights into our model on the given device and dtype.
+    tied_weights: Sequence[tuple[str, str]] = (),
+) -> ModelT:
+    """Load a profile's weights into an experiment model.
 
     The model is built on the meta device so no memory is spent on random
-    initialisation; parameters are assigned straight from the checkpoint.
+    initialisation. ``tied_weights`` maps checkpoint keys that may be omitted
+    to the keys whose parameters they share.
     """
     if isinstance(profile, str):
         profile = get_profile(profile)
@@ -26,7 +31,7 @@ def load_model(
     cfg = LlamaConfig.from_file(path / "config.json")
 
     with torch.device("meta"):
-        model = LlamaForCausalLM(cfg)
+        model = build_model(cfg)
 
     # transfer one tensor at a time, avoiding a full fp32 checkpoint copy in CPU RAM.
     state: dict[str, torch.Tensor] = {}
@@ -35,15 +40,33 @@ def load_model(
             for key in checkpoint.keys():  # noqa: SIM118 -- safe_open is not a dict/iterable
                 state[key] = checkpoint.get_tensor(key).to(device=device, dtype=dtype)
 
-    if cfg.tie_word_embeddings:
-        # The checkpoint omits lm_head; strict loading still wants the key present.
-        state["lm_head.weight"] = state["model.embed_tokens.weight"]
-    model.load_state_dict(state, strict=True, assign=True)
-    if cfg.tie_word_embeddings:
-        model.lm_head.weight = model.model.embed_tokens.weight  # assign=True untied them
+    aliases = []
+    for target, source in tied_weights:
+        if target not in state:
+            state[target] = state[source]
+            aliases.append((target, source))
 
-    # Non-persistent buffers are not in the checkpoint and were built on the meta
-    # device, so they hold no data. Recompute them for real.
-    model.model.inv_freq = rope_inv_freq(cfg.head_dim, cfg.rope_theta, cfg.rope_scaling)
+    model.load_state_dict(state, strict=True, assign=True)
+    for target, source in aliases:
+        _set_parameter(model, target, _get_parameter(model, source))
 
     return model.to(device).eval()
+
+
+def _get_parameter(model: nn.Module, path: str) -> nn.Parameter:
+    value: object = model
+    for part in path.split("."):
+        value = getattr(value, part)
+    if not isinstance(value, nn.Parameter):
+        raise TypeError(f"{path!r} is not a parameter")
+    return value
+
+
+def _set_parameter(model: nn.Module, path: str, parameter: nn.Parameter) -> None:
+    parent_path, name = path.rsplit(".", 1)
+    parent: object = model
+    for part in parent_path.split("."):
+        parent = getattr(parent, part)
+    if not isinstance(parent, nn.Module):
+        raise TypeError(f"parent of {path!r} is not a module")
+    setattr(parent, name, parameter)

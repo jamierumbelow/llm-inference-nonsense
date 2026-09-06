@@ -3,7 +3,7 @@ import gc
 import pytest
 import torch
 
-from harness.loader import load_model
+from e00_baseline import load_model
 from harness.profiles import get_profile
 
 PROMPT = "The present King of France is"

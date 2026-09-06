@@ -1,22 +1,17 @@
-"""Compare our model with Transformers in fp32 and bf16.
-
-Read compare() for the sweep, run_model() for one forward pass, and
-compare_outputs() for the logit differences. The runner owns the Transformers
-dependency; the model and loader do not depend on it.
-"""
+"""Compare an experiment's model with Transformers in fp32 and bf16."""
 
 import gc
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from itertools import combinations, product
 from typing import Literal, cast
 
 import torch
-from torch import Tensor
+from torch import Tensor, nn
 from torch.nn.attention import SDPBackend, sdpa_kernel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from harness.loader import load_model
 from harness.profiles import ModelProfile, get_profile
+from runner.experiments import Experiment, get_experiment
 
 type Implementation = Literal["transformers", "custom"]
 type Precision = Literal["fp32", "bf16"]
@@ -25,40 +20,54 @@ DTYPES = {"fp32": torch.float32, "bf16": torch.bfloat16}
 
 
 def compare(
-    model_profile: str,
+    experiment_name: str,
+    model_name: str,
     device: str,
-    prompt: str,
+    prompts: Mapping[str, str],
     *,
     implementations: Sequence[Implementation] = ("transformers", "custom"),
     precisions: Sequence[Precision] = ("fp32", "bf16"),
 ) -> dict:
-    """Run every chosen implementation at every chosen precision, then compare pairs."""
+    """Run each model variant over the same named prompts, then compare its logits."""
+    if not prompts:
+        raise ValueError("choose at least one prompt")
     if not implementations or not precisions:
         raise ValueError("choose at least one implementation and precision")
     if device == "cuda":
         if not torch.cuda.is_available():
-            raise RuntimeError("CUDA is required for the modal profile")
+            raise RuntimeError("CUDA is required for the Modal runner")
         torch.set_float32_matmul_precision("highest")
 
-    profile = get_profile(model_profile)
+    experiment = get_experiment(experiment_name)
+    profile = get_profile(model_name)
     path = profile.snapshot_path()
     tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True)
-    ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device=device)
-    outputs = {}
-    runs = {}
+    token_ids = {
+        name: tokenizer(prompt, return_tensors="pt").input_ids
+        for name, prompt in prompts.items()
+    }
+    outputs: dict[str, dict[str, Tensor]] = {name: {} for name in prompts}
+    runs: dict[str, dict[str, dict]] = {name: {} for name in prompts}
 
-    # Only one model is alive at a time; saved logits stay on CPU.
+    # Load each variant once, run every prompt, then release it before loading the next.
     for implementation, precision in product(implementations, precisions):
-        name = f"{implementation}_{precision}"
-        print(f"Running {implementation} {precision}...", flush=True)
-        outputs[name], runs[name] = run_model(
-            implementation, profile, device, DTYPES[precision], ids, tokenizer
-        )
+        variant = f"{implementation}_{precision}"
+        print(f"Running {variant}...", flush=True)
+        model = load_variant(implementation, experiment, profile, device, DTYPES[precision])
+        try:
+            for prompt_name, ids in token_ids.items():
+                logits = run_prompt(model, implementation, ids.to(device=device))
+                outputs[prompt_name][variant] = logits.float()
+                runs[prompt_name][variant] = summarize(logits, tokenizer)
+        finally:
+            del model
+            gc.collect()
+            if device == "cuda":
+                torch.cuda.empty_cache()
 
     return {
-        "prompt": prompt,
-        "token_ids": ids.cpu().tolist(),
-        "model_profile": model_profile,
+        "experiment": experiment_name,
+        "model": model_name,
         "checkpoint": str(path),
         "torch_version": torch.__version__,
         "device": device,
@@ -66,52 +75,54 @@ def compare(
         "attention_backend": "SDPA math",
         "float32_matmul_precision": torch.get_float32_matmul_precision(),
         "use_cache": False,
-        "runs": runs,
-        "comparisons": compare_outputs(outputs, tokenizer),
+        "prompts": {
+            name: {
+                "text": prompts[name],
+                "token_ids": token_ids[name].tolist(),
+                "runs": runs[name],
+                "comparisons": compare_outputs(outputs[name], tokenizer),
+            }
+            for name in prompts
+        },
     }
 
 
-def run_model(
+def load_variant(
     implementation: Implementation,
+    experiment: Experiment,
     profile: ModelProfile,
     device: str,
     dtype: torch.dtype,
-    ids: Tensor,
-    tokenizer,
-) -> tuple[Tensor, dict]:
-    """Load one model, run the prompt, summarise its logits, then release it."""
-    if implementation == "transformers":
-        model = (
-            cast(
-                torch.nn.Module,
-                AutoModelForCausalLM.from_pretrained(
-                    profile.snapshot_path(),
-                    dtype=dtype,
-                    attn_implementation="sdpa",
-                    local_files_only=True,
-                ),
-            )
-            .to(device=device)
-            .eval()
+) -> nn.Module:
+    if implementation == "custom":
+        return experiment.load_model(profile, device, dtype)
+    return (
+        cast(
+            nn.Module,
+            AutoModelForCausalLM.from_pretrained(
+                profile.snapshot_path(),
+                dtype=dtype,
+                attn_implementation="sdpa",
+                local_files_only=True,
+            ),
         )
-    else:
-        model = load_model(profile, device=device, dtype=dtype)
+        .to(device=device)
+        .eval()
+    )
 
-    try:
-        with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
-            if implementation == "transformers":
-                logits = model(ids, use_cache=False).logits
-            else:
-                logits = model(ids)
-        logits = logits.cpu()
-    finally:
-        del model
-        gc.collect()
-        if device == "cuda":
-            torch.cuda.empty_cache()
 
+def run_prompt(model: nn.Module, implementation: Implementation, ids: Tensor) -> Tensor:
+    with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
+        if implementation == "transformers":
+            logits = model(ids, use_cache=False).logits
+        else:
+            logits = model(ids)
+    return cast(Tensor, logits).cpu()
+
+
+def summarize(logits: Tensor, tokenizer) -> dict:
     values, indices = logits[0, -1].float().topk(5)
-    summary = {
+    return {
         "logit_dtype": str(logits.dtype),
         "shape": list(logits.shape),
         "all_finite": bool(torch.isfinite(logits).all()),
@@ -120,10 +131,9 @@ def run_model(
             for i, v in zip(indices.tolist(), values.tolist(), strict=True)
         ],
     }
-    return logits.float(), summary
 
 
-def compare_outputs(outputs: dict, tokenizer) -> dict:
+def compare_outputs(outputs: Mapping[str, Tensor], tokenizer) -> dict:
     comparisons = {}
     for reference, candidate in combinations(outputs, 2):
         expected, actual = outputs[reference], outputs[candidate]
