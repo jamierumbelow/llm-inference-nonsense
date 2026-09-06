@@ -213,5 +213,6 @@ instead of " generation"), and the mean errors vs fp32 are the same.
 
 13:26 - Next up is getting the 8B model running on the GPU. I've only got 16GB of unified memory, so fp32 (8 billion * 4 bytes) is not going to fit at all, and bf16 (8 billion * 2 bytes) will fill us up with the model weights alone. 
 
-Let's add a `--profile local|modal` flag to the compare_bf16 script, and then get Modal setup with an A100 80GB and run the comparison on the GPU.
+Let's add a `--profile local|modal` flag to the compare_bf16 script, and then get Modal setup with an A100 40GB and run the comparison on the GPU.
 
+13:33 - to get the model running on Modal, we need to give modal the HF_TOKEN and setup a persistant cache for the weights. then we'll need to update the harness and comparison code to configure the GPU and support the modal profile

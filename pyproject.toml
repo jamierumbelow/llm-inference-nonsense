@@ -6,6 +6,7 @@ requires-python = ">=3.13"
 # Workspace members, so a plain `uv sync` installs all of them editable.
 dependencies = [
     "harness",
+    "modal>=1.5.5",
 ]
 
 [dependency-groups]
