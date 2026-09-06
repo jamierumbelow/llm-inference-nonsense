@@ -63,7 +63,7 @@ def prepare_checkpoint() -> None:
     scaledown_window=2,
 )
 def compare_target(prompt: str) -> dict:
-    from compare_bf16 import compare
+    from harness.comparison import compare
 
     cache.reload()
     return compare("target", "cuda", prompt)

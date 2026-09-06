@@ -236,3 +236,11 @@ So, let's do the following things to get a bit more confident that our implement
 * Check that sharding is working correctly
 * Check that the embedding/output-head tying is working correctly
 * See what happens when we change head dimensions and RoPe scaling factor
+
+14:17 - Actually, before we do any of that, my mental model of what's going on is starting to falter. that's the trouble with rushing through this with a coding agent, I guess.
+
+Making a couple of changes to the harness and comparison tools:
+* Automatically save the reports in the output_logs directory (I was manually copying them before)
+* Move some of the comparison code into the harness
+* Separate out model choice from where they get run (local means 1B + local and modal means 8B + cpu)
+* Remove the timings from the correctness script (these aren't numbers we'll benchmark against, since they don't include setup costs or multiple runs/variation, and they make the code more complicated)
