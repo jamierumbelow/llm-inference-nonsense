@@ -248,3 +248,25 @@ Making a couple of changes to the harness and comparison tools:
 * Separate running the model from reporting the results
 * Remove the timings from the correctness script (these aren't numbers we'll benchmark against, since they don't include setup costs or multiple runs/variation, and they make the code more complicated)
 * Rename the scripts to make things clearer
+
+14:53 - Okay, I've done some refactoring and it's now a lot cleaner.
+
+We have:
+* output_logs - which hold the full result dumps from runs
+* packages/harness - which contains our custom model and the code needed to load it
+* packages/runner - which knows how to run a model through the `transformers` package, on Modal, and how to perform the model comparisons
+* tools - which has a few CLI entrypoints to download weights from huggingface, kick off a comparison run, and setup my Modal account
+
+Our comparison checks that the two models agree on output logits for each input position over a prompt. This tells us that the custom model and the transformers model are in rough agreement - their basic chain of operations, from checkpoint loading, embedding lookup, RMS normalisation, QKV projections and other attention mechanisms/RoPE implementation, residual connections etc. all the way through to output are reliably the same.
+
+We still expect to see some small differences between fp32 and bf16 models, and between transformers and the custom model, and between CPU and GPU. This is because:
+* Representing the numbers differently will likely produce slightly different outputs (they are rounded differently, which changes the calculation)
+* The transformers version and our custom model are implemented slightly differently
+* CPUs and GPUs might order calculations separately, which, when combined with differences in rounding especially, can produce subtly different results.
+
+But this doesn't matter hugely because:
+* A significant mistake in our custom implementation would normally cause large differences in fp32 results throughout the network, which we don't see
+* Our bf16 errors remain in roughly the same range as Transformers bf16 relative to fp32
+* Disagreements over logits remain very close
+
+Most importantly, the purpose of this whole exercise is not to get our custom model to match the off-the-shelf version identically. Rather, what we want is to get a simple model in place that we can benchmark and then build upon. What actual model we use isn't hugely relevant.
