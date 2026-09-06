@@ -2,6 +2,8 @@ import argparse
 import gc
 import json
 import time
+from datetime import datetime
+from pathlib import Path
 from typing import cast
 
 import torch
@@ -223,6 +225,19 @@ def compare_outputs(outputs: dict, tokenizer) -> dict:
     return comparisons
 
 
+def save_report(report: dict, profile: str) -> Path:
+    now = datetime.now().astimezone()
+    directory = (
+        Path(__file__).resolve().parents[1] / "output_logs" / f"{now.month}_{now.day}_{now.year}"
+    )
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / f"{now:%H_%M_%S_%f}_{profile}.json"
+    with path.open("x") as output:
+        json.dump(report, output, indent=2)
+        output.write("\n")
+    return path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Compare fp32 and bf16 model outputs.")
     parser.add_argument(
@@ -238,7 +253,9 @@ def main() -> None:
         report = run(PROMPT)
     else:
         report = compare("dev", "cpu")
+    path = save_report(report, args.profile)
     print(json.dumps(report, indent=2))
+    print(f"Saved {path}")
 
 
 if __name__ == "__main__":
