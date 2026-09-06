@@ -1,3 +1,4 @@
+import argparse
 import gc
 import json
 import time
@@ -15,6 +16,18 @@ LONG_PROMPT = "The Meta Llama 3.1 collection of multilingual large language mode
 PROMPT = LONG_PROMPT
 
 def main() -> None:
+    # parse flags
+    parser = argparse.ArgumentParser(description="Compare fp32 and bf16 model outputs.")
+    parser.add_argument(
+        "--profile",
+        choices=("local", "modal"),
+        default="local",
+        help="execution profile (default local)",
+    )
+    args = parser.parse_args()
+    if args.profile == "modal":
+        parser.error("the modal profile is not configured yet; use --profile local")
+
     path = get_profile("dev").snapshot_path()
     tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True)
     ids = tokenizer(PROMPT, return_tensors="pt").input_ids
