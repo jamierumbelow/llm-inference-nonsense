@@ -9,6 +9,7 @@ from huggingface_hub import snapshot_download
 from harness.profiles import CHECKPOINT_FILES, get_profile
 from runner.comparison import compare
 from runner.config import MODAL_SECRET, MODAL_VOLUME
+from runner.generation import generate as generate_on_device
 
 ROOT = Path(__file__).resolve().parents[4]
 CACHE_PATH = "/checkpoints"
@@ -98,8 +99,39 @@ def compare_on_gpu(experiment: str, model: str, prompts: dict[str, str]) -> dict
     return compare(experiment, model, "cuda", prompts)
 
 
+@app.function(
+    gpu="A100-40GB",
+    volumes={CACHE_PATH: cache},
+    memory=49152,
+    timeout=600,
+    max_containers=1,
+    scaledown_window=2,
+)
+def generate_on_gpu(
+    experiment: str,
+    model: str,
+    dtype: str,
+    prompt: str,
+    max_new_tokens: int,
+) -> dict:
+    cache.reload()
+    return generate_on_device(experiment, model, "cuda", dtype, prompt, max_new_tokens)
+
+
 def run(experiment: str, model: str, prompts: Mapping[str, str]) -> dict:
     with modal.enable_output(), app.run():
         # Download on CPU so GPU time is only used for the comparison.
         prepare_checkpoint.remote(model)
         return compare_on_gpu.remote(experiment, model, dict(prompts))
+
+
+def generate(
+    experiment: str,
+    model: str,
+    dtype: str,
+    prompt: str,
+    max_new_tokens: int,
+) -> dict:
+    with modal.enable_output(), app.run():
+        prepare_checkpoint.remote(model)
+        return generate_on_gpu.remote(experiment, model, dtype, prompt, max_new_tokens)

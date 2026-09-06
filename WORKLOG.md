@@ -296,4 +296,13 @@ I'll get codex to do a pass and check the changes.
 3. Add a dedicated benchmark runner, which gives us the various timings we'll care about: prefill latency, time-to-first-token, total generation latency, avg time per token, peak GPU memory allocation, and some measures of variation.
 4. Benchmark reports should output everything we need to make them reproducible (experiment, git commit, model and checkpoint, dtype, GPU, pytorch/cuda versions, runtime values incl batch size, inputs and outputs, and all the raw measurements)
 
+15:43 - added support for generation, and added a tools/generate.py to run it locally:
+
+```
+$ uv run tools/generate.py --experiment e00_baseline --model 1b --location local --dtype bf16 --prompt "commit it then to the flames," --max-new-tokens 16
+commit it then to the flames, and let the fire consume the ashes of your doubts and fears. Let the flames
+```
+
+and thus, David Hume was routed by Llama 3.2 1B
+
 </details>

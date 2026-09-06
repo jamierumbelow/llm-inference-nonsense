@@ -40,3 +40,16 @@ uv run tools/compare_logits.py \
 
 `--prompt` runs one custom prompt instead. Every run writes a structured JSON report and the full
 CLI output to `output_logs/<date>/`.
+
+## Generating text
+
+Generate one greedy continuation with an experiment model:
+
+```console
+uv run tools/generate.py \
+  --experiment e00_baseline \
+  --model 1b \
+  --location local \
+  --prompt "The present King of France is" \
+  --max-new-tokens 16
+```
