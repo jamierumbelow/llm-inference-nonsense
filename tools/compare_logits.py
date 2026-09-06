@@ -5,7 +5,6 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from harness.comparison import compare
 from harness.profiles import PROFILES
 
 SHORT_PROMPT = "The present King of France is"
@@ -47,12 +46,12 @@ def main() -> None:
         help="local: CPU; modal: A100 40GB GPU (default: local)",
     )
     args = parser.parse_args()
-    if args.location == "modal":
-        from modal_compare import run
-
-        report = run(args.model, PROMPT)
+    if args.location == "local":
+        from runner.local import run
     else:
-        report = compare(args.model, "cpu", PROMPT)
+        from runner.modal import run
+
+    report = run(args.model, PROMPT)
     report["model"] = args.model
     report["location"] = args.location
     path = save_report(report, args.model, args.location)

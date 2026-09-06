@@ -1,0 +1,17 @@
+[project]
+name = "runner"
+version = "0.0.0"
+description = "local and remote runners for inference experiments"
+requires-python = ">=3.13"
+dependencies = [
+    "harness",
+    "modal>=1.5.5",
+    "transformers",
+]
+
+[tool.uv.sources]
+harness = { workspace = true }
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"

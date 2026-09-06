@@ -1,7 +1,7 @@
 """Compare our model with Transformers in fp32 and bf16.
 
 Read compare() for the sweep, run_model() for one forward pass, and
-compare_outputs() for the logit differences. Transformers is a workspace dev
+compare_outputs() for the logit differences. The runner owns the Transformers
 dependency; the model and loader do not depend on it.
 """
 

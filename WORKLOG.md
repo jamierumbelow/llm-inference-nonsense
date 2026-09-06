@@ -247,3 +247,4 @@ Making a couple of changes to the harness and comparison tools:
 * Make the prompt a CLI input
 * Separate running the model from reporting the results
 * Remove the timings from the correctness script (these aren't numbers we'll benchmark against, since they don't include setup costs or multiple runs/variation, and they make the code more complicated)
+* Rename the scripts to make things clearer
