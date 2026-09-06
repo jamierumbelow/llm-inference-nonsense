@@ -243,4 +243,7 @@ Making a couple of changes to the harness and comparison tools:
 * Automatically save the reports in the output_logs directory (I was manually copying them before)
 * Move some of the comparison code into the harness
 * Separate out model choice from where they get run (local means 1B + local and modal means 8B + cpu)
+* Standardise the 1b/8b and dev/target naming
+* Make the prompt a CLI input
+* Separate running the model from reporting the results
 * Remove the timings from the correctness script (these aren't numbers we'll benchmark against, since they don't include setup costs or multiple runs/variation, and they make the code more complicated)

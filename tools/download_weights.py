@@ -1,8 +1,8 @@
 """Download model weights into the Hugging Face cache.
 
 Usage:
-    uv run tools/download_weights.py dev       # Llama 3.2 1B, runs on the laptop
-    uv run tools/download_weights.py target    # Llama 3.1 8B, needs a GPU box
+    uv run tools/download_weights.py 1b        # Llama 3.2 1B, runs on the laptop
+    uv run tools/download_weights.py 8b        # Llama 3.1 8B, needs a GPU box
     uv run tools/download_weights.py --list
 
 Weights land in $HF_HOME (set in mise.toml), never in the repo. Both models

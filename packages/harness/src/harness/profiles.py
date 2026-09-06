@@ -48,16 +48,16 @@ PROFILES: dict[str, ModelProfile] = {
     p.name: p
     for p in (
         ModelProfile(
-            name="dev",
+            name="1b",
             repo_id="meta-llama/Llama-3.2-1B-Instruct",
             params_b=1.24,
             notes=(
-                "Runs on the laptop (MPS/CPU). Same architecture as the target apart from "
+                "Runs on the laptop (MPS/CPU). Same architecture as the 8B apart from "
                 "tied input/output embeddings. Doubles as the speculative-decoding draft."
             ),
         ),
         ModelProfile(
-            name="target",
+            name="8b",
             repo_id="meta-llama/Llama-3.1-8B-Instruct",
             params_b=8.03,
             notes="The model every experiment is measured on. Needs a GPU box.",

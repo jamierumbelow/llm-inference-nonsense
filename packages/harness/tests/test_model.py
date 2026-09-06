@@ -13,7 +13,7 @@ PROMPT = "The present King of France is"
 def prompt_ids() -> torch.Tensor:
     from transformers import AutoTokenizer
 
-    tok = AutoTokenizer.from_pretrained(get_profile("dev").snapshot_path())
+    tok = AutoTokenizer.from_pretrained(get_profile("1b").snapshot_path())
     return tok(PROMPT, return_tensors="pt").input_ids
 
 
@@ -27,14 +27,14 @@ def test_logits_match_transformers(prompt_ids: torch.Tensor) -> None:
     """
     from transformers import AutoModelForCausalLM
 
-    path = get_profile("dev").snapshot_path()
+    path = get_profile("1b").snapshot_path()
     ref = AutoModelForCausalLM.from_pretrained(path, dtype=torch.float32).eval()
     with torch.no_grad():
         expected = ref(prompt_ids).logits
     del ref
     gc.collect()
 
-    model = load_model("dev", device="cpu", dtype=torch.float32)
+    model = load_model("1b", device="cpu", dtype=torch.float32)
     with torch.no_grad():
         actual = model(prompt_ids)
 
@@ -45,5 +45,5 @@ def test_logits_match_transformers(prompt_ids: torch.Tensor) -> None:
 
 @pytest.mark.slow
 def test_tied_head_shares_embedding() -> None:
-    model = load_model("dev", device="cpu", dtype=torch.float32)
+    model = load_model("1b", device="cpu", dtype=torch.float32)
     assert model.lm_head.weight is model.model.embed_tokens.weight

@@ -40,8 +40,8 @@ def test_rejects_unknown_rope_type() -> None:
 
 
 @pytest.mark.slow
-def test_dev_checkpoint_config() -> None:
-    cfg = LlamaConfig.from_file(get_profile("dev").snapshot_path() / "config.json")
+def test_1b_checkpoint_config() -> None:
+    cfg = LlamaConfig.from_file(get_profile("1b").snapshot_path() / "config.json")
     assert cfg.hidden_size == 2048
     assert cfg.num_hidden_layers == 16
     assert cfg.num_attention_heads == 32

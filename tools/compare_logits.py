@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from harness.comparison import compare
+from harness.profiles import PROFILES
 
 SHORT_PROMPT = "The present King of France is"
 LONG_PROMPT = (
@@ -16,7 +17,6 @@ LONG_PROMPT = (
 )
 
 PROMPT = LONG_PROMPT
-MODEL_PROFILES = {"1b": "dev", "8b": "target"}
 
 
 def save_report(report: dict, model: str, location: str) -> Path:
@@ -36,7 +36,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Compare fp32 and bf16 model outputs.")
     parser.add_argument(
         "--model",
-        choices=tuple(MODEL_PROFILES),
+        choices=tuple(PROFILES),
         default="1b",
         help="model size (default: 1b)",
     )
@@ -47,13 +47,12 @@ def main() -> None:
         help="local: CPU; modal: A100 40GB GPU (default: local)",
     )
     args = parser.parse_args()
-    model_profile = MODEL_PROFILES[args.model]
     if args.location == "modal":
         from modal_compare import run
 
-        report = run(model_profile, PROMPT)
+        report = run(args.model, PROMPT)
     else:
-        report = compare(model_profile, "cpu", PROMPT)
+        report = compare(args.model, "cpu", PROMPT)
     report["model"] = args.model
     report["location"] = args.location
     path = save_report(report, args.model, args.location)
