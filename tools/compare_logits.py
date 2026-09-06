@@ -7,15 +7,7 @@ from pathlib import Path
 
 from harness.profiles import PROFILES
 
-SHORT_PROMPT = "The present King of France is"
-LONG_PROMPT = (
-    "The Meta Llama 3.1 collection of multilingual large language models (LLMs) is a collection "
-    "of pretrained and instruction tuned generative models in 8B, 70B and 405B sizes (text in/text "
-    "out). The Llama 3.1 instruction tuned text only models (8B, 70B, 405B) are optimized for "
-    "multilingual dialogue use cases and outperform many of the available open source"
-)
-
-PROMPT = LONG_PROMPT
+DEFAULT_PROMPT = "The present King of France is"
 
 
 def save_report(report: dict, model: str, location: str) -> Path:
@@ -45,13 +37,18 @@ def main() -> None:
         default="local",
         help="local: CPU; modal: A100 40GB GPU (default: local)",
     )
+    parser.add_argument(
+        "--prompt",
+        default=DEFAULT_PROMPT,
+        help="text to run through each model variant",
+    )
     args = parser.parse_args()
     if args.location == "local":
         from runner.local import run
     else:
         from runner.modal import run
 
-    report = run(args.model, PROMPT)
+    report = run(args.model, args.prompt)
     report["model"] = args.model
     report["location"] = args.location
     path = save_report(report, args.model, args.location)
