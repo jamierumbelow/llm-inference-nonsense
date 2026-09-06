@@ -1,0 +1,336 @@
+{
+  "prompt": "The Meta Llama 3.1 collection of multilingual large language models (LLMs) is a collection of pretrained and instruction tuned generative models in 8B, 70B and 405B sizes (text in/text out). The Llama 3.1 instruction tuned text only models (8B, 70B, 405B) are optimized for multilingual dialogue use cases and outperform many of the available open source",
+  "token_ids": [
+    [
+      128000,
+      791,
+      16197,
+      445,
+      81101,
+      220,
+      18,
+      13,
+      16,
+      4526,
+      315,
+      2814,
+      50923,
+      3544,
+      4221,
+      4211,
+      320,
+      4178,
+      22365,
+      8,
+      374,
+      264,
+      4526,
+      315,
+      81769,
+      323,
+      7754,
+      33519,
+      1803,
+      1413,
+      4211,
+      304,
+      220,
+      23,
+      33,
+      11,
+      220,
+      2031,
+      33,
+      323,
+      220,
+      16408,
+      33,
+      12562,
+      320,
+      1342,
+      304,
+      37371,
+      704,
+      570,
+      578,
+      445,
+      81101,
+      220,
+      18,
+      13,
+      16,
+      7754,
+      33519,
+      1495,
+      1193,
+      4211,
+      320,
+      23,
+      33,
+      11,
+      220,
+      2031,
+      33,
+      11,
+      220,
+      16408,
+      33,
+      8,
+      527,
+      34440,
+      369,
+      2814,
+      50923,
+      21976,
+      1005,
+      5157,
+      323,
+      704,
+      29588,
+      1690,
+      315,
+      279,
+      2561,
+      1825,
+      2592
+    ]
+  ],
+  "model_profile": "dev",
+  "checkpoint": "/Users/jamierumbelow/.cache/huggingface/hub/models--meta-llama--Llama-3.2-1B-Instruct/snapshots/9213176726f574b556790deb65791e0c5aa438b6",
+  "torch_version": "2.14.0",
+  "device": "cpu",
+  "gpu": null,
+  "attention_backend": "SDPA math",
+  "float32_matmul_precision": "highest",
+  "use_cache": false,
+  "runs": {
+    "transformers_fp32": {
+      "logit_dtype": "torch.float32",
+      "shape": [
+        1,
+        91,
+        128256
+      ],
+      "all_finite": true,
+      "forward_seconds": 1.9860122916288674,
+      "top_5_next_tokens": [
+        {
+          "id": 4211,
+          "text": " models",
+          "logit": 18.022096633911133
+        },
+        {
+          "id": 445,
+          "text": " L",
+          "logit": 16.88998794555664
+        },
+        {
+          "id": 323,
+          "text": " and",
+          "logit": 16.210107803344727
+        },
+        {
+          "id": 2814,
+          "text": " mult",
+          "logit": 15.419775009155273
+        },
+        {
+          "id": 4221,
+          "text": " language",
+          "logit": 15.35138988494873
+        }
+      ]
+    },
+    "transformers_bf16": {
+      "logit_dtype": "torch.bfloat16",
+      "shape": [
+        1,
+        91,
+        128256
+      ],
+      "all_finite": true,
+      "forward_seconds": 1.2489596670493484,
+      "top_5_next_tokens": [
+        {
+          "id": 4211,
+          "text": " models",
+          "logit": 18.0
+        },
+        {
+          "id": 445,
+          "text": " L",
+          "logit": 16.875
+        },
+        {
+          "id": 323,
+          "text": " and",
+          "logit": 16.125
+        },
+        {
+          "id": 2814,
+          "text": " mult",
+          "logit": 15.375
+        },
+        {
+          "id": 4221,
+          "text": " language",
+          "logit": 15.3125
+        }
+      ]
+    },
+    "custom_fp32": {
+      "logit_dtype": "torch.float32",
+      "shape": [
+        1,
+        91,
+        128256
+      ],
+      "all_finite": true,
+      "forward_seconds": 0.7371665420942008,
+      "top_5_next_tokens": [
+        {
+          "id": 4211,
+          "text": " models",
+          "logit": 18.022096633911133
+        },
+        {
+          "id": 445,
+          "text": " L",
+          "logit": 16.88998794555664
+        },
+        {
+          "id": 323,
+          "text": " and",
+          "logit": 16.210107803344727
+        },
+        {
+          "id": 2814,
+          "text": " mult",
+          "logit": 15.419775009155273
+        },
+        {
+          "id": 4221,
+          "text": " language",
+          "logit": 15.35138988494873
+        }
+      ]
+    },
+    "custom_bf16": {
+      "logit_dtype": "torch.bfloat16",
+      "shape": [
+        1,
+        91,
+        128256
+      ],
+      "all_finite": true,
+      "forward_seconds": 1.2585775000043213,
+      "top_5_next_tokens": [
+        {
+          "id": 4211,
+          "text": " models",
+          "logit": 18.0
+        },
+        {
+          "id": 445,
+          "text": " L",
+          "logit": 16.875
+        },
+        {
+          "id": 323,
+          "text": " and",
+          "logit": 16.25
+        },
+        {
+          "id": 2814,
+          "text": " mult",
+          "logit": 15.4375
+        },
+        {
+          "id": 4221,
+          "text": " language",
+          "logit": 15.375
+        }
+      ]
+    }
+  },
+  "comparisons": {
+    "transformers_bf16_vs_transformers_fp32": {
+      "mean_absolute_error": 0.02565355971455574,
+      "max_absolute_error": 0.36710286140441895,
+      "last_position_mean_absolute_error": 0.029803911224007607,
+      "last_position_max_absolute_error": 0.12284106016159058,
+      "argmax_agreement": "90/91",
+      "disagreements": [
+        {
+          "position": 59,
+          "reference_token": " generation",
+          "candidate_token": "-to",
+          "reference_top_2_gap": 0.1050872802734375
+        }
+      ]
+    },
+    "custom_fp32_vs_transformers_fp32": {
+      "mean_absolute_error": 0.0,
+      "max_absolute_error": 0.0,
+      "last_position_mean_absolute_error": 0.0,
+      "last_position_max_absolute_error": 0.0,
+      "argmax_agreement": "91/91",
+      "disagreements": []
+    },
+    "custom_bf16_vs_transformers_fp32": {
+      "mean_absolute_error": 0.027516944333910942,
+      "max_absolute_error": 0.30733680725097656,
+      "last_position_mean_absolute_error": 0.020644880831241608,
+      "last_position_max_absolute_error": 0.11037015914916992,
+      "argmax_agreement": "90/91",
+      "disagreements": [
+        {
+          "position": 59,
+          "reference_token": " generation",
+          "candidate_token": "-to",
+          "reference_top_2_gap": 0.1050872802734375
+        }
+      ]
+    },
+    "custom_fp32_vs_transformers_bf16": {
+      "mean_absolute_error": 0.02565355971455574,
+      "max_absolute_error": 0.36710286140441895,
+      "last_position_mean_absolute_error": 0.029803911224007607,
+      "last_position_max_absolute_error": 0.12284106016159058,
+      "argmax_agreement": "90/91",
+      "disagreements": [
+        {
+          "position": 59,
+          "reference_token": "-to",
+          "candidate_token": " generation",
+          "reference_top_2_gap": 0.0
+        }
+      ]
+    },
+    "custom_bf16_vs_transformers_bf16": {
+      "mean_absolute_error": 0.028971359133720398,
+      "max_absolute_error": 0.4296875,
+      "last_position_mean_absolute_error": 0.021092489361763,
+      "last_position_max_absolute_error": 0.125,
+      "argmax_agreement": "91/91",
+      "disagreements": []
+    },
+    "custom_bf16_vs_custom_fp32": {
+      "mean_absolute_error": 0.027516944333910942,
+      "max_absolute_error": 0.30733680725097656,
+      "last_position_mean_absolute_error": 0.020644880831241608,
+      "last_position_max_absolute_error": 0.11037015914916992,
+      "argmax_agreement": "90/91",
+      "disagreements": [
+        {
+          "position": 59,
+          "reference_token": " generation",
+          "candidate_token": "-to",
+          "reference_top_2_gap": 0.1050872802734375
+        }
+      ]
+    }
+  },
+  "model": "1b",
+  "location": "local"
+}

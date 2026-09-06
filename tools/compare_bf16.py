@@ -16,15 +16,16 @@ LONG_PROMPT = (
 )
 
 PROMPT = LONG_PROMPT
+MODEL_PROFILES = {"1b": "dev", "8b": "target"}
 
 
-def save_report(report: dict, profile: str) -> Path:
+def save_report(report: dict, model: str, location: str) -> Path:
     now = datetime.now().astimezone()
     directory = (
         Path(__file__).resolve().parents[1] / "output_logs" / f"{now.month}_{now.day}_{now.year}"
     )
     directory.mkdir(parents=True, exist_ok=True)
-    path = directory / f"{now:%H_%M_%S_%f}_{profile}.json"
+    path = directory / f"{now:%H_%M_%S_%f}_{model}_{location}.json"
     with path.open("x") as output:
         json.dump(report, output, indent=2)
         output.write("\n")
@@ -34,19 +35,28 @@ def save_report(report: dict, profile: str) -> Path:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Compare fp32 and bf16 model outputs.")
     parser.add_argument(
-        "--profile",
+        "--model",
+        choices=tuple(MODEL_PROFILES),
+        default="1b",
+        help="model size (default: 1b)",
+    )
+    parser.add_argument(
+        "--location",
         choices=("local", "modal"),
         default="local",
-        help="local: 1B on CPU; modal: 8B on an A100 40GB (default local)",
+        help="local: CPU; modal: A100 40GB GPU (default: local)",
     )
     args = parser.parse_args()
-    if args.profile == "modal":
+    model_profile = MODEL_PROFILES[args.model]
+    if args.location == "modal":
         from modal_compare import run
 
-        report = run(PROMPT)
+        report = run(model_profile, PROMPT)
     else:
-        report = compare("dev", "cpu", PROMPT)
-    path = save_report(report, args.profile)
+        report = compare(model_profile, "cpu", PROMPT)
+    report["model"] = args.model
+    report["location"] = args.location
+    path = save_report(report, args.model, args.location)
     print(json.dumps(report, indent=2))
     print(f"Saved {path}")
 

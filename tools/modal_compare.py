@@ -1,4 +1,4 @@
-"""Modal resources used by `compare_bf16.py --profile modal`."""
+"""Modal resources used by `compare_bf16.py --location modal`."""
 
 from pathlib import Path
 
@@ -47,10 +47,10 @@ cache = modal.Volume.from_name(VOLUME_NAME)
     timeout=1800,
     max_containers=1,
 )
-def prepare_checkpoint() -> None:
+def prepare_checkpoint(model_profile: str) -> None:
     from download_weights import download
 
-    download("target")
+    download(model_profile)
     cache.commit()
 
 
@@ -62,15 +62,15 @@ def prepare_checkpoint() -> None:
     max_containers=1,
     scaledown_window=2,
 )
-def compare_target(prompt: str) -> dict:
+def compare_on_gpu(model_profile: str, prompt: str) -> dict:
     from harness.comparison import compare
 
     cache.reload()
-    return compare("target", "cuda", prompt)
+    return compare(model_profile, "cuda", prompt)
 
 
-def run(prompt: str) -> dict:
+def run(model_profile: str, prompt: str) -> dict:
     with modal.enable_output(), app.run():
         # Download on CPU so GPU time is only used for the comparison.
-        prepare_checkpoint.remote()
-        return compare_target.remote(prompt)
+        prepare_checkpoint.remote(model_profile)
+        return compare_on_gpu.remote(model_profile, prompt)
