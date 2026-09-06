@@ -6,7 +6,6 @@ dependency; the model and loader do not depend on it.
 """
 
 import gc
-import time
 from collections.abc import Sequence
 from itertools import combinations, product
 from typing import Literal, cast
@@ -99,17 +98,11 @@ def run_model(
         model = load_model(profile, device=device, dtype=dtype)
 
     try:
-        if device == "cuda":
-            torch.cuda.synchronize()
-        start = time.perf_counter()
         with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
             if implementation == "transformers":
                 logits = model(ids, use_cache=False).logits
             else:
                 logits = model(ids)
-        if device == "cuda":
-            torch.cuda.synchronize()
-        elapsed = time.perf_counter() - start
         logits = logits.cpu()
     finally:
         del model
@@ -122,7 +115,6 @@ def run_model(
         "logit_dtype": str(logits.dtype),
         "shape": list(logits.shape),
         "all_finite": bool(torch.isfinite(logits).all()),
-        "forward_seconds": elapsed,
         "top_5_next_tokens": [
             {"id": i, "text": tokenizer.decode([i]), "logit": v}
             for i, v in zip(indices.tolist(), values.tolist(), strict=True)
