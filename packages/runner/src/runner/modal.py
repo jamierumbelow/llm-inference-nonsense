@@ -1,5 +1,6 @@
 """Run model comparisons on Modal."""
 
+import time
 from collections.abc import Mapping
 from pathlib import Path
 
@@ -7,6 +8,8 @@ import modal
 from huggingface_hub import snapshot_download
 
 from harness.profiles import CHECKPOINT_FILES, get_profile
+from runner.benchmark import benchmark as benchmark_on_device
+from runner.benchmark_workloads import STANDARD_BENCHMARK
 from runner.comparison import compare
 from runner.config import MODAL_SECRET, MODAL_VOLUME
 from runner.generation import generate as generate_on_device
@@ -58,9 +61,7 @@ image = (
     .add_local_dir(
         ROOT / "packages/harness/src", "/app/packages/harness/src", ignore=["__pycache__"]
     )
-    .add_local_dir(
-        ROOT / "packages/runner/src", "/app/packages/runner/src", ignore=["__pycache__"]
-    )
+    .add_local_dir(ROOT / "packages/runner/src", "/app/packages/runner/src", ignore=["__pycache__"])
 )
 for experiment_dir in EXPERIMENT_DIRS:
     image = image.add_local_dir(
@@ -118,6 +119,19 @@ def generate_on_gpu(
     return generate_on_device(experiment, model, "cuda", dtype, prompt, max_new_tokens)
 
 
+@app.function(
+    gpu="A100-40GB",
+    volumes={CACHE_PATH: cache},
+    memory=49152,
+    timeout=1800,
+    max_containers=1,
+    scaledown_window=2,
+)
+def benchmark_on_gpu(experiment: str) -> dict:
+    cache.reload()
+    return benchmark_on_device(experiment)
+
+
 def run(experiment: str, model: str, prompts: Mapping[str, str]) -> dict:
     with modal.enable_output(), app.run():
         # Download on CPU so GPU time is only used for the comparison.
@@ -135,3 +149,24 @@ def generate(
     with modal.enable_output(), app.run():
         prepare_checkpoint.remote(model)
         return generate_on_gpu.remote(experiment, model, dtype, prompt, max_new_tokens)
+
+
+def benchmark(experiment: str) -> dict:
+    with modal.enable_output(), app.run():
+        # Treat an already-running Modal app as the boundary of the end-to-end run.
+        end_to_end_start = time.perf_counter()
+        checkpoint_start = time.perf_counter()
+        prepare_checkpoint.remote(STANDARD_BENCHMARK.model)
+        checkpoint_preparation_ms = (time.perf_counter() - checkpoint_start) * 1_000
+
+        gpu_start = time.perf_counter()
+        report = benchmark_on_gpu.remote(experiment)
+        gpu_benchmark_ms = (time.perf_counter() - gpu_start) * 1_000
+
+        report["setup"] = {
+            "checkpoint_preparation_ms": checkpoint_preparation_ms,
+            **report["setup"],
+        }
+        report["modal_gpu_benchmark_ms"] = gpu_benchmark_ms
+        report["end_to_end_latency_ms"] = (time.perf_counter() - end_to_end_start) * 1_000
+        return report

@@ -305,8 +305,8 @@ commit it then to the flames, and let the fire consume the ashes of your doubts 
 
 and thus, David Hume was routed by Llama 3.2 1B
 
-16:01 - Added the benchmark workloads and prompt.
+16:01 - Added the benchmark workloads and prompt. going to the park with Maggie then will pick this back up
 
-
+17:36 - Next up the benchmark script itself and report generation.
 
 </details>

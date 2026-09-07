@@ -12,11 +12,11 @@ To do this, I'll build much of the framework, inference engine, and perform the 
 
 The repository is split into four parts:
 
-* `experiments/` contains the model definition for each stage of the project. `e00_baseline` is
+- `experiments/` contains the model definition for each stage of the project. `e00_baseline` is
   the initial plain PyTorch Llama implementation.
-* `packages/harness/` contains shared model configuration and checkpoint-loading code.
-* `packages/runner/` compares an experiment with Transformers and runs it locally or on Modal.
-* `tools/` contains the command-line entry points.
+- `packages/harness/` contains shared model configuration and checkpoint-loading code.
+- `packages/runner/` compares an experiment with Transformers and runs it locally or on Modal.
+- `tools/` contains the command-line entry points.
 
 [WORKLOG.md](WORKLOG.md) contains the running notes and results.
 
@@ -58,13 +58,30 @@ uv run tools/generate.py \
 
 Every experiment uses the same 8B bf16, batch-size-one workload on an A100 40GB:
 
-| Workload | Input tokens | Output tokens |
-| --- | ---: | ---: |
-| Short prefill | 128 | 0 |
-| Medium prefill | 512 | 0 |
-| Long prefill | 1,024 | 0 |
-| Short decode | 128 | 32 |
-| Long decode | 128 | 128 |
+| Workload       | Input tokens | Output tokens |
+| -------------- | -----------: | ------------: |
+| Short prefill  |          128 |             0 |
+| Medium prefill |          512 |             0 |
+| Long prefill   |        1,024 |             0 |
+| Short decode   |          128 |            32 |
+| Long decode    |          128 |           128 |
 
 The decode cases keep the input length fixed so they isolate the cost of generating more tokens.
 The definitions live in `runner.benchmark_workloads` and are shared by every experiment.
+
+Run the suite with:
+
+```console
+uv run tools/benchmark.py --experiment e00_baseline
+```
+
+The benchmark reports:
+
+* prefill latency
+* time to first token
+* total generation latency
+* average time per generated token
+* peak GPU memory allocation
+* and timing variation.
+
+It saves a JSON report and the full CLI transcript under `output_logs`.
