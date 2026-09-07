@@ -58,11 +58,7 @@ def parse_args() -> argparse.Namespace:
     if unknown:
         problem = f"unrecognized arguments: {shlex.join(unknown)}"
         # argparse exposes its registered options through the parser actions.
-        known_options = [
-            option
-            for action in parser._actions
-            for option in action.option_strings
-        ]
+        known_options = [option for action in parser._actions for option in action.option_strings]
         suggestions = {
             suggestion[0]
             for token in unknown

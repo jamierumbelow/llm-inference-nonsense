@@ -1,10 +1,20 @@
 """The initial, deliberately simple Llama implementation."""
 
+from collections.abc import Callable, Collection
+
 import torch
+from torch import Tensor
+from torch.nn.attention import SDPBackend, sdpa_kernel
 
 from e00_baseline.model import LlamaForCausalLM
+from harness.generation import greedy_generate
 from harness.loader import load_model as load_checkpoint
 from harness.profiles import ModelProfile
+
+ATTENTION_BACKEND = "SDPA math"
+USES_CACHE = False
+FULL_RECOMPUTATION = True
+GENERATION_ALGORITHM = "greedy"
 
 
 def load_model(
@@ -12,7 +22,6 @@ def load_model(
     device: str | torch.device = "cpu",
     dtype: torch.dtype = torch.bfloat16,
 ) -> LlamaForCausalLM:
-    """Build the baseline model and load a Hugging Face checkpoint into it."""
     return load_checkpoint(
         LlamaForCausalLM,
         profile,
@@ -20,3 +29,25 @@ def load_model(
         dtype,
         tied_weights=(("lm_head.weight", "model.embed_tokens.weight"),),
     )
+
+
+def prefill(model: LlamaForCausalLM, input_ids: Tensor) -> Tensor:
+    with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
+        return model(input_ids)
+
+
+def generate(
+    model: LlamaForCausalLM,
+    input_ids: Tensor,
+    max_new_tokens: int,
+    eos_token_ids: Collection[int] = (),
+    on_token: Callable[[], None] | None = None,
+) -> Tensor:
+    with sdpa_kernel(SDPBackend.MATH):
+        return greedy_generate(
+            model,
+            input_ids,
+            max_new_tokens,
+            eos_token_ids,
+            on_token,
+        )

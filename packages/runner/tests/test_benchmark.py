@@ -5,14 +5,16 @@ import pytest
 import torch
 
 import runner.benchmark as benchmark_module
-from runner.benchmark import (
+from harness.generation import greedy_generate
+from runner.benchmark_workloads import BenchmarkSuite, BenchmarkWorkload
+from runner.measurements import (
     MEASURED_RUNS,
     WARMUP_RUNS,
+    intervals,
     measure,
     measure_once,
     summarize,
 )
-from runner.benchmark_workloads import BenchmarkSuite, BenchmarkWorkload
 
 
 class FakeTokenizer:
@@ -36,7 +38,7 @@ def test_benchmark_records_inputs_outputs_and_raw_measurements(monkeypatch) -> N
         name="test",
         model="test-model",
         location="local",
-        gpu="none",
+        gpu="A100-40GB",
         dtype="bf16",
         batch_size=1,
         workloads=(
@@ -46,9 +48,20 @@ def test_benchmark_records_inputs_outputs_and_raw_measurements(monkeypatch) -> N
     )
     profile = SimpleNamespace(
         repo_id="example/checkpoint",
+        params_b=1.0,
         snapshot_path=lambda: Path("/tmp/checkpoint"),
     )
-    experiment = SimpleNamespace(load_model=lambda profile, device, dtype: FakeModel())
+    experiment = SimpleNamespace(
+        ATTENTION_BACKEND="test",
+        USES_CACHE=False,
+        FULL_RECOMPUTATION=True,
+        GENERATION_ALGORITHM="greedy",
+        load_model=lambda profile, device, dtype: FakeModel(),
+        prefill=lambda model, input_ids: model(input_ids),
+        generate=lambda model, input_ids, max_new_tokens, on_token=None: greedy_generate(
+            model, input_ids, max_new_tokens, on_token=on_token
+        ),
+    )
     monkeypatch.setattr(benchmark_module, "STANDARD_BENCHMARK", suite)
     monkeypatch.setattr(benchmark_module, "get_profile", lambda name: profile)
     monkeypatch.setattr(benchmark_module, "get_experiment", lambda name: experiment)
@@ -57,9 +70,6 @@ def test_benchmark_records_inputs_outputs_and_raw_measurements(monkeypatch) -> N
         "from_pretrained",
         lambda *args, **kwargs: FakeTokenizer(),
     )
-    monkeypatch.setattr(benchmark_module, "WARMUP_RUNS", 0)
-    monkeypatch.setattr(benchmark_module, "MEASURED_RUNS", 1)
-
     report = benchmark_module.benchmark("e00", device="cpu")
 
     assert report["checkpoint"] == "/tmp/checkpoint"
@@ -67,7 +77,12 @@ def test_benchmark_records_inputs_outputs_and_raw_measurements(monkeypatch) -> N
     assert report["results"]["prefill"]["input"]["token_ids"] == [0, 1, 2]
     assert report["results"]["prefill"]["output"]["next_token_id"] == 2
     assert report["results"]["decode"]["output"]["token_ids"] == [2, 2]
-    assert len(report["results"]["decode"]["raw_measurements"]) == 1
+    assert len(report["results"]["decode"]["raw_measurements"]) == MEASURED_RUNS
+    assert len(report["results"]["decode"]["raw_measurements"][0]["token_latencies_ms"]) == 2
+    assert report["results"]["decode"]["time_per_output_token_ms"]["mean"] >= 0
+    assert report["results"]["decode"]["generation_tokens_per_gpu_dollar"]["mean"] > 0
+    assert report["hardware"]["published"]["modal_gpu_usd_per_hour"] == pytest.approx(2.0988)
+    assert report["setup"]["gpu_memory_after_model_load"] is None
 
 
 def test_measure_excludes_warmups_and_supports_cpu() -> None:
@@ -93,6 +108,10 @@ def test_measure_once_returns_the_result_and_latency() -> None:
 
     assert result == "loaded"
     assert latency >= 0
+
+
+def test_intervals_turns_cumulative_token_times_into_durations() -> None:
+    assert intervals([2.0, 5.5, 9.0]) == [2.0, 3.5, 3.5]
 
 
 def test_summarize_reports_variation() -> None:

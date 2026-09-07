@@ -11,12 +11,11 @@ from torch.nn.attention import SDPBackend, sdpa_kernel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from harness.profiles import ModelProfile, get_profile
+from runner.config import DTYPES
 from runner.experiments import Experiment, get_experiment
 
 type Implementation = Literal["transformers", "custom"]
 type Precision = Literal["fp32", "bf16"]
-
-DTYPES = {"fp32": torch.float32, "bf16": torch.bfloat16}
 
 
 def compare(
@@ -43,8 +42,7 @@ def compare(
     path = profile.snapshot_path()
     tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True)
     token_ids = {
-        name: tokenizer(prompt, return_tensors="pt").input_ids
-        for name, prompt in prompts.items()
+        name: tokenizer(prompt, return_tensors="pt").input_ids for name, prompt in prompts.items()
     }
     outputs: dict[str, dict[str, Tensor]] = {name: {} for name in prompts}
     runs: dict[str, dict[str, dict]] = {name: {} for name in prompts}
@@ -56,7 +54,7 @@ def compare(
         model = load_variant(implementation, experiment, profile, device, DTYPES[precision])
         try:
             for prompt_name, ids in token_ids.items():
-                logits = run_prompt(model, implementation, ids.to(device=device))
+                logits = run_prompt(model, implementation, experiment, ids.to(device=device))
                 outputs[prompt_name][variant] = logits.float()
                 runs[prompt_name][variant] = summarize(logits, tokenizer)
         finally:
@@ -72,9 +70,9 @@ def compare(
         "torch_version": torch.__version__,
         "device": device,
         "gpu": torch.cuda.get_device_name() if device == "cuda" else None,
-        "attention_backend": "SDPA math",
+        "attention_backend": experiment.ATTENTION_BACKEND,
         "float32_matmul_precision": torch.get_float32_matmul_precision(),
-        "use_cache": False,
+        "use_cache": experiment.USES_CACHE,
         "prompts": {
             name: {
                 "text": prompts[name],
@@ -111,12 +109,17 @@ def load_variant(
     )
 
 
-def run_prompt(model: nn.Module, implementation: Implementation, ids: Tensor) -> Tensor:
-    with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
-        if implementation == "transformers":
+def run_prompt(
+    model: nn.Module,
+    implementation: Implementation,
+    experiment: Experiment,
+    ids: Tensor,
+) -> Tensor:
+    if implementation == "transformers":
+        with torch.inference_mode(), sdpa_kernel(SDPBackend.MATH):
             logits = model(ids, use_cache=False).logits
-        else:
-            logits = model(ids)
+    else:
+        logits = experiment.prefill(model, ids)
     return cast(Tensor, logits).cpu()
 
 

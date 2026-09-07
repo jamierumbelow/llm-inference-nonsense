@@ -309,4 +309,10 @@ and thus, David Hume was routed by Llama 3.2 1B
 
 17:36 - Next up the benchmark script itself and report generation.
 
+17:49 - Run looks good, output is clean, very happy! 128-token prefill takes 27.16ms on average; runtime scales with tokens; decode also scales as we recompute the growing sequence, and memory rises with context length. I'll increase the number of warmup runs (it only stabilised after five). and there's a couple of other things to fix before we can lock it in as our baseline.
+
+the benchmark alwys calls harness.greedy_generate and calls the model directly, so we can't do specdec and cached decoding in future optimisations, so we'll get the experiments to export prefill() and decode() and call them
+
+we should also record a bit more data: per-token timings, gpu allocation immediately after loading the model, peak allocated and reserved memory, GPU price per hour, peak bf16 FLOPs etc, and record whether checkpoint preparation was a cache hit or download
+
 </details>

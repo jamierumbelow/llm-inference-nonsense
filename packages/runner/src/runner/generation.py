@@ -4,11 +4,9 @@ import torch
 from transformers import AutoTokenizer
 
 from harness.config import LlamaConfig
-from harness.generation import greedy_generate
 from harness.profiles import get_profile
+from runner.config import DTYPES
 from runner.experiments import get_experiment
-
-DTYPES = {"fp32": torch.float32, "bf16": torch.bfloat16}
 
 
 def generate(
@@ -28,7 +26,7 @@ def generate(
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device=device)
     model = experiment.load_model(profile, device, DTYPES[dtype_name])
 
-    output_ids = greedy_generate(
+    output_ids = experiment.generate(
         model,
         input_ids,
         max_new_tokens,

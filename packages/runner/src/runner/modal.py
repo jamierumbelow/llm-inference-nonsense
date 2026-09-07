@@ -6,6 +6,7 @@ from pathlib import Path
 
 import modal
 from huggingface_hub import snapshot_download
+from huggingface_hub.errors import LocalEntryNotFoundError
 
 from harness.profiles import CHECKPOINT_FILES, get_profile
 from runner.benchmark import benchmark as benchmark_on_device
@@ -74,6 +75,18 @@ app = modal.App("llm-inference-compare", image=image)
 cache = modal.Volume.from_name(MODAL_VOLUME)
 
 
+def gpu_function(timeout: int):
+    """Apply the resource configuration shared by every GPU operation."""
+    return app.function(
+        gpu=STANDARD_BENCHMARK.gpu,
+        volumes={CACHE_PATH: cache},
+        memory=49152,
+        timeout=timeout,
+        max_containers=1,
+        scaledown_window=2,
+    )
+
+
 @app.function(
     secrets=[modal.Secret.from_name(MODAL_SECRET, required_keys=["HF_TOKEN"])],
     volumes={CACHE_PATH: cache},
@@ -81,33 +94,29 @@ cache = modal.Volume.from_name(MODAL_VOLUME)
     timeout=1800,
     max_containers=1,
 )
-def prepare_checkpoint(model: str) -> None:
+def prepare_checkpoint(model: str) -> dict:
     profile = get_profile(model)
-    snapshot_download(profile.repo_id, allow_patterns=CHECKPOINT_FILES)
+    try:
+        path = snapshot_download(
+            profile.repo_id,
+            allow_patterns=CHECKPOINT_FILES,
+            local_files_only=True,
+        )
+        cache_hit = True
+    except LocalEntryNotFoundError:
+        path = snapshot_download(profile.repo_id, allow_patterns=CHECKPOINT_FILES)
+        cache_hit = False
     cache.commit()
+    return {"cache_hit": cache_hit, "checkpoint": path}
 
 
-@app.function(
-    gpu="A100-40GB",
-    volumes={CACHE_PATH: cache},
-    memory=49152,  # CPU RAM for the Transformers fp32 checkpoint before GPU transfer.
-    timeout=600,
-    max_containers=1,
-    scaledown_window=2,
-)
+@gpu_function(timeout=600)
 def compare_on_gpu(experiment: str, model: str, prompts: dict[str, str]) -> dict:
     cache.reload()
     return compare(experiment, model, "cuda", prompts)
 
 
-@app.function(
-    gpu="A100-40GB",
-    volumes={CACHE_PATH: cache},
-    memory=49152,
-    timeout=600,
-    max_containers=1,
-    scaledown_window=2,
-)
+@gpu_function(timeout=600)
 def generate_on_gpu(
     experiment: str,
     model: str,
@@ -119,14 +128,7 @@ def generate_on_gpu(
     return generate_on_device(experiment, model, "cuda", dtype, prompt, max_new_tokens)
 
 
-@app.function(
-    gpu="A100-40GB",
-    volumes={CACHE_PATH: cache},
-    memory=49152,
-    timeout=1800,
-    max_containers=1,
-    scaledown_window=2,
-)
+@gpu_function(timeout=1800)
 def benchmark_on_gpu(experiment: str) -> dict:
     cache.reload()
     return benchmark_on_device(experiment)
@@ -156,7 +158,7 @@ def benchmark(experiment: str) -> dict:
         # Treat an already-running Modal app as the boundary of the end-to-end run.
         end_to_end_start = time.perf_counter()
         checkpoint_start = time.perf_counter()
-        prepare_checkpoint.remote(STANDARD_BENCHMARK.model)
+        checkpoint = prepare_checkpoint.remote(STANDARD_BENCHMARK.model)
         checkpoint_preparation_ms = (time.perf_counter() - checkpoint_start) * 1_000
 
         gpu_start = time.perf_counter()
@@ -165,8 +167,11 @@ def benchmark(experiment: str) -> dict:
 
         report["setup"] = {
             "checkpoint_preparation_ms": checkpoint_preparation_ms,
+            "checkpoint_cache_hit": checkpoint["cache_hit"],
             **report["setup"],
         }
         report["modal_gpu_benchmark_ms"] = gpu_benchmark_ms
+        gpu_rate = report["hardware"]["published"]["modal_gpu_usd_per_second"]
+        report["estimated_modal_gpu_cost_usd"] = gpu_benchmark_ms / 1_000 * gpu_rate
         report["end_to_end_latency_ms"] = (time.perf_counter() - end_to_end_start) * 1_000
         return report

@@ -79,9 +79,17 @@ The benchmark reports:
 
 * prefill latency
 * time to first token
+* time per output token and raw per-token timelines
 * total generation latency
-* average time per generated token
-* peak GPU memory allocation
+* prefill and generation throughput
+* GPU-only cost per generated token
+* model, peak allocated, peak reserved, and incremental GPU memory
 * and timing variation.
 
-It saves a JSON report and the full CLI transcript under `output_logs`.
+Each experiment supplies the prefill and generation operations being measured, including its
+attention backend and cache behavior. Before measuring, the runner performs five long-prefill
+stabilization passes, followed by three workload-specific warmups and ten measured runs.
+
+The report includes published GPU bandwidth, bf16 throughput, and current Modal pricing alongside
+the detected hardware. It saves the JSON report and a non-animated CLI transcript under
+`output_logs`.

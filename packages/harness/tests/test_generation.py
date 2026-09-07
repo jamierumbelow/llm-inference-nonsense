@@ -39,3 +39,23 @@ def test_greedy_generation_stops_after_eos() -> None:
     )
 
     assert output.tolist() == [[1, 2, 3, 4, 5]]
+
+
+def test_generation_calls_hook_after_each_token() -> None:
+    next_tokens = iter((4, 5, 6))
+    boundaries = []
+
+    def forward(token_ids: torch.Tensor) -> torch.Tensor:
+        logits = torch.zeros(1, token_ids.shape[1], 8)
+        logits[0, -1, next(next_tokens)] = 1
+        return logits
+
+    output = greedy_generate(
+        forward,
+        torch.tensor([[1, 2, 3]]),
+        max_new_tokens=3,
+        on_token=lambda: boundaries.append(len(boundaries)),
+    )
+
+    assert output.tolist() == [[1, 2, 3, 4, 5, 6]]
+    assert boundaries == [0, 1, 2]
