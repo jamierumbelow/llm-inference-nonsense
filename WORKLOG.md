@@ -305,4 +305,8 @@ commit it then to the flames, and let the fire consume the ashes of your doubts 
 
 and thus, David Hume was routed by Llama 3.2 1B
 
+16:01 - Added the benchmark workloads and prompt.
+
+
+
 </details>

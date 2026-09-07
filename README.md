@@ -53,3 +53,18 @@ uv run tools/generate.py \
   --prompt "The present King of France is" \
   --max-new-tokens 16
 ```
+
+## Standard benchmark
+
+Every experiment uses the same 8B bf16, batch-size-one workload on an A100 40GB:
+
+| Workload | Input tokens | Output tokens |
+| --- | ---: | ---: |
+| Short prefill | 128 | 0 |
+| Medium prefill | 512 | 0 |
+| Long prefill | 1,024 | 0 |
+| Short decode | 128 | 32 |
+| Long decode | 128 | 128 |
+
+The decode cases keep the input length fixed so they isolate the cost of generating more tokens.
+The definitions live in `runner.benchmark_workloads` and are shared by every experiment.
