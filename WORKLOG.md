@@ -391,4 +391,23 @@ our cache object represents the cache as a tensor of shape `[layers, 2, B, KV, c
 
 and the cache class has a `write` method which is called by the attention mechanism after it projects the current input into new keys and values, advances the length, and a `prefix` method which returns the all cached values up to that length
 
+21:29 - let's try running the experiment! a quick check:
+
+```
+$ uv run tools/generate.py \
+    --experiment e01_kv_cache \
+    --model 1b \
+    --location local \
+    --dtype bf16 \
+    --prompt "The present King of France is" \
+    --max-new-tokens 32
+The present King of France is Louis XIV, who ruled from 1643 to 1715. He was the son of Louis XIII and Anne of Austria. Louis XIV was a member of
+```
+
+and the full benchmark:
+
+```
+$ uv run tools/benchmark.py --experiment e01_kv_cache --runs 3
+```
+
 </details>
