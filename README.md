@@ -20,6 +20,8 @@ The repository is split into four parts:
 
 [WORKLOG.md](WORKLOG.md) contains the running notes and results.
 
+[EXPERIMENT_PLAN.md](EXPERIMENT_PLAN.md) contains the plan for each of the experiments.
+
 ## Comparing logits
 
 Run the short default prompt locally:
@@ -74,6 +76,10 @@ Run the suite with:
 ```console
 uv run tools/benchmark.py --experiment e00_baseline
 ```
+
+Pass `--runs N` to run N complete, independently launched Modal benchmark jobs. Each run writes its
+own JSON report and CLI log, allowing variation between GPU jobs to be compared as well as variation
+between the ten measurements inside each job.
 
 The benchmark reports:
 

@@ -24,6 +24,13 @@ def experiment_name(value: str) -> str:
     raise argparse.ArgumentTypeError(message)
 
 
+def positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("must be at least 1")
+    return parsed
+
+
 def git_metadata() -> dict:
     commit = subprocess.run(
         ["git", "rev-parse", "HEAD"],
@@ -51,31 +58,46 @@ def main() -> None:
         metavar=f"{{{','.join(EXPERIMENTS)}}}",
         help="experiment to benchmark (default: e00_baseline)",
     )
-    args = parser.parse_args()
-    started_at = datetime.now().astimezone()
-    source = git_metadata()
-    report_path, log_path = output_paths(
-        f"{args.experiment}_benchmark_8b_modal",
-        started_at,
+    parser.add_argument(
+        "--runs",
+        type=positive_int,
+        default=1,
+        help="number of complete Modal benchmark jobs (default: 1)",
     )
+    args = parser.parse_args()
+    source = git_metadata()
     command = shlex.join(["uv", "run", "tools/benchmark.py", *sys.argv[1:]])
 
-    def run() -> dict:
-        print(
-            f"Benchmarking {args.experiment}: {STANDARD_BENCHMARK.model} "
-            f"{STANDARD_BENCHMARK.dtype} on {STANDARD_BENCHMARK.gpu}"
+    for run_index in range(1, args.runs + 1):
+        started_at = datetime.now().astimezone()
+        suffix = f"_run_{run_index:02d}_of_{args.runs:02d}" if args.runs > 1 else ""
+        report_path, log_path = output_paths(
+            f"{args.experiment}_benchmark_8b_modal{suffix}",
+            started_at,
         )
-        from runner.modal import benchmark
 
-        return {
-            "started_at": started_at.isoformat(),
-            "command": command,
-            **source,
-            **benchmark(args.experiment),
-        }
+        def run(
+            current_run: int = run_index,
+            current_started_at: datetime = started_at,
+        ) -> dict:
+            prefix = f"Run {current_run}/{args.runs}: " if args.runs > 1 else ""
+            print(
+                f"{prefix}Benchmarking {args.experiment}: {STANDARD_BENCHMARK.model} "
+                f"{STANDARD_BENCHMARK.dtype} on {STANDARD_BENCHMARK.gpu}"
+            )
+            from runner.modal import benchmark
 
-    # Modal's live renderer emits every animation frame when output is teed.
-    run_and_save(command, report_path, log_path, run, interactive=False)
+            series = {"series_run": current_run, "series_runs": args.runs} if args.runs > 1 else {}
+            return {
+                "started_at": current_started_at.isoformat(),
+                "command": command,
+                **series,
+                **source,
+                **benchmark(args.experiment),
+            }
+
+        # Modal's live renderer emits every animation frame when output is teed.
+        run_and_save(command, report_path, log_path, run, interactive=False)
 
 
 if __name__ == "__main__":

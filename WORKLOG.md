@@ -315,4 +315,60 @@ the benchmark alwys calls harness.greedy_generate and calls the model directly, 
 
 we should also record a bit more data: per-token timings, gpu allocation immediately after loading the model, peak allocated and reserved memory, GPU price per hour, peak bf16 FLOPs etc, and record whether checkpoint preparation was a cache hit or download
 
+21:32 - all improved, fixed, committed. running our baseline now and starting to work on the experiments plan.
+
+</details>
+
+
+<details>
+
+<summary>## September 8th, 2026</summary>
+
+19:46 - baseline run looking great. here's Sol's summary:
+
+```
+The baseline is functionally consistent, but the three-run series is not yet a clean, homogeneous benchmark set.
+
+### Three-run series
+
+These are medians from each job:
+
+| Run | Actual GPU | Prefill 128/512/1024 | 32-token decode | 128-token decode |
+|---|---|---:|---:|---:|
+| 1 | A100 40GB | 40.3 / 67.1 / 151.0 ms | 38.6 ms TPOT, 25.9 tok/s | 38.2 ms TPOT, 26.2 tok/s |
+| 2 | **A100 80GB** | 31.7 / 64.6 / 143.7 ms | 31.4 ms TPOT, 31.8 tok/s | 33.5 ms TPOT, 29.9 tok/s |
+| 3 | A100 40GB | 27.2 / 66.2 / 150.5 ms | 32.2 ms TPOT, 31.3 tok/s | 34.2 ms TPOT, 29.3 tok/s |
+
+Modal supplied an A100 80GB for run 2 despite the requested 40GB profile, so we should exclude it from the 40GB baseline.
+
+### Best current 40GB baseline
+
+Combining runs 1 and 3 with the earlier clean 40GB run gives three comparable jobs:
+
+| Metric | Median | Job range |
+|---|---:|---:|
+| 128-token prefill | 40.3 ms | 27.2–40.7 ms |
+| 512-token prefill | 67.1 ms | 66.2–67.8 ms |
+| 1,024-token prefill | 151.0 ms | 150.5–152.1 ms |
+| 32-token generation | 1.236 s | 1.024–1.261 s |
+| 32-token TPOT | 38.6 ms | 32.2–39.4 ms |
+| 128-token generation | 4.891 s | 4.366–5.102 s |
+| 128-token TPOT | 38.2 ms | 34.2–39.8 ms |
+| Generation throughput | about 26 tok/s | 25.1–31.3 tok/s |
+| GPU cost per million tokens | about $22.5 | $18.7–$23.2 |
+
+The model occupies 14.96 GiB. Peak allocation reaches 15.35 GiB during long prefill, only about 405 MiB above the loaded model.
+```
+
+what I think this tells us:
+
+- outputs were identical between all three runs, so our implementation is stable. hurrah!
+- long and mid length prefill have a tight range
+- short prefill and decode vary much more between jobs
+- i'm not sure why, just yet. I'm assuming it's something about the underlying GPU
+- full throughput is between 25 and 31 tokens.
+- the extra work as context grows is partly hidden by larger matrix operations using the GPU more efficiently.
+
+added the first experiment to the plan: add a KV cache!
+
 </details>
