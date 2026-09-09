@@ -233,66 +233,73 @@ Let's add a `--profile local|modal` flag to the compare_bf16 script, and then ge
 | transformers bf16    | 0.03218          | 2.00926   | 90/91           |
 | custom bf16          | 0.02533          | 0.94676   | 91/91           |
 
-Complete token agreement across fp32, but a very small difference in mean and max error between transformers and custom (well under the the 1e-3 tolerance that claude put in the test file). 
+Complete token agreement across fp32, but a very small difference in mean and max error between transformers and custom (well under the the 1e-3 tolerance that claude put in the test file).
 
 I don't have an empirical or theoretical reason why that tolerance specifically should be chosen ...but I don't want to get hung up on this, since the purpose of this is just to establish a sensible baseline and not get model-for-model identity.
 
 So, let's do the following things to get a bit more confident that our implementation is not broken in some strange way:
-* Run on a slightly larger set of more varied prompts (a one-token input, a sentence, some code, some maths, and a longer passage of ~1k tokens). We want fp32 agreement to hold across all, and bf16 differences to remain comparable to the transfomers implementation.
-* Check that sharding is working correctly
-* Check that the embedding/output-head tying is working correctly
-* See what happens when we change head dimensions and RoPe scaling factor
+
+- Run on a slightly larger set of more varied prompts (a one-token input, a sentence, some code, some maths, and a longer passage of ~1k tokens). We want fp32 agreement to hold across all, and bf16 differences to remain comparable to the transfomers implementation.
+- Check that sharding is working correctly
+- Check that the embedding/output-head tying is working correctly
+- See what happens when we change head dimensions and RoPe scaling factor
 
 14:17 - Actually, before we do any of that, my mental model of what's going on is starting to falter. that's the trouble with rushing through this with a coding agent, I guess.
 
 Making a couple of changes to the harness and comparison tools:
-* Automatically save the reports in the output_logs directory (I was manually copying them before)
-* Move some of the comparison code into the harness
-* Separate out model choice from where they get run (local means 1B + local and modal means 8B + cpu)
-* Standardise the 1b/8b and dev/target naming
-* Make the prompt a CLI input
-* Separate running the model from reporting the results
-* Remove the timings from the correctness script (these aren't numbers we'll benchmark against, since they don't include setup costs or multiple runs/variation, and they make the code more complicated)
-* Rename the scripts to make things clearer
+
+- Automatically save the reports in the output_logs directory (I was manually copying them before)
+- Move some of the comparison code into the harness
+- Separate out model choice from where they get run (local means 1B + local and modal means 8B + cpu)
+- Standardise the 1b/8b and dev/target naming
+- Make the prompt a CLI input
+- Separate running the model from reporting the results
+- Remove the timings from the correctness script (these aren't numbers we'll benchmark against, since they don't include setup costs or multiple runs/variation, and they make the code more complicated)
+- Rename the scripts to make things clearer
 
 14:53 - Okay, I've done some refactoring and it's now a lot cleaner.
 
 We have:
-* output_logs - which hold the full result dumps from runs
-* packages/harness - which contains our custom model and the code needed to load it
-* packages/runner - which knows how to run a model through the `transformers` package, on Modal, and how to perform the model comparisons
-* tools - which has a few CLI entrypoints to download weights from huggingface, kick off a comparison run, and setup my Modal account
+
+- output_logs - which hold the full result dumps from runs
+- packages/harness - which contains our custom model and the code needed to load it
+- packages/runner - which knows how to run a model through the `transformers` package, on Modal, and how to perform the model comparisons
+- tools - which has a few CLI entrypoints to download weights from huggingface, kick off a comparison run, and setup my Modal account
 
 Our comparison checks that the two models agree on output logits for each input position over a prompt. This tells us that the custom model and the transformers model are in rough agreement - their basic chain of operations, from checkpoint loading, embedding lookup, RMS normalisation, QKV projections and other attention mechanisms/RoPE implementation, residual connections etc. all the way through to output are reliably the same.
 
 We still expect to see some small differences between fp32 and bf16 models, and between transformers and the custom model, and between CPU and GPU. This is because:
-* Representing the numbers differently will likely produce slightly different outputs (they are rounded differently, which changes the calculation)
-* The transformers version and our custom model are implemented slightly differently
-* CPUs and GPUs might order calculations separately, which, when combined with differences in rounding especially, can produce subtly different results.
+
+- Representing the numbers differently will likely produce slightly different outputs (they are rounded differently, which changes the calculation)
+- The transformers version and our custom model are implemented slightly differently
+- CPUs and GPUs might order calculations separately, which, when combined with differences in rounding especially, can produce subtly different results.
 
 But this doesn't matter hugely because:
-* A significant mistake in our custom implementation would normally cause large differences in fp32 results throughout the network, which we don't see
-* Our bf16 errors remain in roughly the same range as Transformers bf16 relative to fp32
-* Disagreements over logits remain very close
+
+- A significant mistake in our custom implementation would normally cause large differences in fp32 results throughout the network, which we don't see
+- Our bf16 errors remain in roughly the same range as Transformers bf16 relative to fp32
+- Disagreements over logits remain very close
 
 Most importantly, the purpose of this whole exercise is not to get our custom model to match the off-the-shelf version identically. Rather, what we want is to get a simple model in place that we can benchmark and then build upon. What actual model we use isn't hugely relevant.
 
 15:08 - A few other things that occurred to me when writing the above:
-* I'd like each experiment in the experiments/ directory to define its own model; the harness should be able to load that and the runner should be able to run it, but the packages shouldn't contain model code (we want to be able to compare different model definitions as we increase the complexity)
-* We should still run a sweep against various different prompts
-* We should define a fixed prompt suite so we're not changing prompts between experiments
-* Our output_logs should include the full CLI output, not just the comparison output
+
+- I'd like each experiment in the experiments/ directory to define its own model; the harness should be able to load that and the runner should be able to run it, but the packages shouldn't contain model code (we want to be able to compare different model definitions as we increase the complexity)
+- We should still run a sweep against various different prompts
+- We should define a fixed prompt suite so we're not changing prompts between experiments
+- Our output_logs should include the full CLI output, not just the comparison output
 
 I'll get codex to do a pass and check the changes.
 
 15:29 - All looking good. I've moved the model into e00_baseline, our first experiment, and added the runner and harness changes needed. A few tasks left before we can run e00_baseline and get some proper benchmarking numbers:
+
 1. Add support for greedy generation - ie the prompt->output->prompt+output->next output loop – in the harness
 2. Define a fixed benchmark workload to run in every experiment. It needs minimally:
-    - Short prefill
-    - Medium prefill
-    - Long prefill
-    - Short decode
-    - Long decode
+   - Short prefill
+   - Medium prefill
+   - Long prefill
+   - Short decode
+   - Long decode
 3. Add a dedicated benchmark runner, which gives us the various timings we'll care about: prefill latency, time-to-first-token, total generation latency, avg time per token, peak GPU memory allocation, and some measures of variation.
 4. Benchmark reports should output everything we need to make them reproducible (experiment, git commit, model and checkpoint, dtype, GPU, pytorch/cuda versions, runtime values incl batch size, inputs and outputs, and all the raw measurements)
 
@@ -318,7 +325,6 @@ we should also record a bit more data: per-token timings, gpu allocation immedia
 21:32 - all improved, fixed, committed. running our baseline now and starting to work on the experiments plan.
 
 </details>
-
 
 <details>
 
@@ -370,5 +376,19 @@ what I think this tells us:
 - the extra work as context grows is partly hidden by larger matrix operations using the GPU more efficiently.
 
 added the first experiment to the plan: add a KV cache!
+
+20:24 - let's work on the KV cache. copying across e00_baseline to e01_kv_cache.
+
+20:46 - we can swap out our `forward` function for a `cached_forward` function, which sets up a `cache` singleton (used per generation) and passes it through to the model.
+
+our cache object represents the cache as a tensor of shape `[layers, 2, B, KV, capacity, hd]`:
+- `layers`, the number of hidden layers in the model
+- `2`, one index for K and one for V
+- `B`, the batch size (a little premature but it's included to make comparisons with the `transformers` implementation easier)
+- `KV`, the number of key/value heads from the model config
+- `capacity`, the max length of a sequence (for a particular generation)
+- `hd`, the size of each attention head (which differs between the 1B and 8B models)
+
+and the cache class has a `write` method which is called by the attention mechanism after it projects the current input into new keys and values, advances the length, and a `prefix` method which returns the all cached values up to that length
 
 </details>

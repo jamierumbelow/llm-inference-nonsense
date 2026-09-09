@@ -1,29 +1,13 @@
-"""Experiment 00: a baseline Llama 3 implementation in plain PyTorch.
+"""Experiment 01: the baseline Llama 3 implementation with a KV cache.
 
-This is the reference forward pass we begin with. deliberately simple:
-* no KV cache
-* no batching
-* nothing fancy with fused kernels or FlashAttention
-
-attention recomputes over the whole sequence on every call.
-
-Module and parameter names match the Hugging Face checkpoint layout:
-
-    model.embed_tokens.weight
-    model.layers.{i}.input_layernorm.weight
-    model.layers.{i}.self_attn.{q,k,v,o}_proj.weight
-    model.layers.{i}.post_attention_layernorm.weight
-    model.layers.{i}.mlp.{gate,up,down}_proj.weight
-    model.norm.weight
-    lm_head.weight                (absent when tied to embed_tokens)
-
-Shape notation in comments: B batch, T sequence length, D hidden size,
-H query heads, KV key/value heads, hd head dim, F intermediate size, V vocab.
+The prompt is processed once. Each later call projects only the newest token,
+then attends over the keys and values retained from every earlier position.
 """
 
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 
 import torch
 import torch.nn.functional as F
@@ -86,19 +70,93 @@ def apply_rope(x: Tensor, cos: Tensor, sin: Tensor) -> Tensor:
     return x * cos + rotate_half(x) * sin
 
 
+@dataclass(slots=True)
+class KVCache:
+    """Preallocated keys and values for one generation request."""
+
+    storage: Tensor
+    """[layers, 2, B, KV, capacity, hd]"""
+    length: int = 0
+
+    @classmethod
+    def allocate(
+        cls,
+        cfg: LlamaConfig,
+        batch_size: int,
+        capacity: int,
+        device: torch.device,
+        dtype: torch.dtype,
+    ) -> KVCache:
+        if batch_size < 1:
+            raise ValueError("KV cache batch size must be positive")
+        if capacity < 1:
+            raise ValueError("KV cache capacity must be positive")
+        if capacity > cfg.max_position_embeddings:
+            raise ValueError(
+                f"KV cache capacity {capacity} exceeds the model limit "
+                f"of {cfg.max_position_embeddings}"
+            )
+        return cls(
+            torch.empty(
+                cfg.num_hidden_layers,
+                2,
+                batch_size,
+                cfg.num_key_value_heads,
+                capacity,
+                cfg.head_dim,
+                device=device,
+                dtype=dtype,
+            )
+        )
+
+    @property
+    def batch_size(self) -> int:
+        return self.storage.shape[2]
+
+    @property
+    def capacity(self) -> int:
+        return self.storage.shape[4]
+
+    def write(
+        self,
+        layer_index: int,
+        keys: Tensor,
+        values: Tensor,
+    ) -> int:
+        end = self.length + keys.shape[2]
+        if end > self.capacity:
+            raise ValueError(f"KV cache capacity {self.capacity} exceeded by position {end}")
+        self.storage[layer_index, 0, :, :, self.length : end].copy_(keys)
+        self.storage[layer_index, 1, :, :, self.length : end].copy_(values)
+        return end
+
+    def prefix(self, layer_index: int, end: int) -> tuple[Tensor, Tensor]:
+        return (
+            self.storage[layer_index, 0, :, :, :end],
+            self.storage[layer_index, 1, :, :, :end],
+        )
+
+
 class Attention(nn.Module):
     """Grouped-query attention: H query heads share KV heads in groups of H / KV."""
 
-    def __init__(self, cfg: LlamaConfig) -> None:
+    def __init__(self, cfg: LlamaConfig, layer_index: int) -> None:
         super().__init__()
         self.cfg = cfg
+        self.layer_index = layer_index
         d, hd = cfg.hidden_size, cfg.head_dim
         self.q_proj = nn.Linear(d, cfg.num_attention_heads * hd, bias=False)
         self.k_proj = nn.Linear(d, cfg.num_key_value_heads * hd, bias=False)
         self.v_proj = nn.Linear(d, cfg.num_key_value_heads * hd, bias=False)
         self.o_proj = nn.Linear(cfg.num_attention_heads * hd, d, bias=False)
 
-    def forward(self, x: Tensor, cos: Tensor, sin: Tensor) -> Tensor:
+    def forward(
+        self,
+        x: Tensor,
+        cos: Tensor,
+        sin: Tensor,
+        cache: KVCache | None = None,
+    ) -> Tensor:
         bsz, seqlen, _ = x.shape
         cfg = self.cfg
 
@@ -109,6 +167,10 @@ class Attention(nn.Module):
 
         q = apply_rope(q, cos, sin)
         k = apply_rope(k, cos, sin)
+
+        if cache is not None:
+            end = cache.write(self.layer_index, k, v)
+            k, v = cache.prefix(self.layer_index, end)
 
         # Each KV head serves num_kv_groups consecutive query heads, so repeat
         # along the head axis: [B, KV, T, hd] -> [B, H, T, hd].
@@ -140,15 +202,21 @@ class MLP(nn.Module):
 class DecoderLayer(nn.Module):
     """Pre-norm transformer block: x + attn(norm(x)), then x + mlp(norm(x))."""
 
-    def __init__(self, cfg: LlamaConfig) -> None:
+    def __init__(self, cfg: LlamaConfig, layer_index: int) -> None:
         super().__init__()
         self.input_layernorm = nn.RMSNorm(cfg.hidden_size, eps=cfg.rms_norm_eps)
-        self.self_attn = Attention(cfg)
+        self.self_attn = Attention(cfg, layer_index)
         self.post_attention_layernorm = nn.RMSNorm(cfg.hidden_size, eps=cfg.rms_norm_eps)
         self.mlp = MLP(cfg)
 
-    def forward(self, x: Tensor, cos: Tensor, sin: Tensor) -> Tensor:
-        x = x + self.self_attn(self.input_layernorm(x), cos, sin)
+    def forward(
+        self,
+        x: Tensor,
+        cos: Tensor,
+        sin: Tensor,
+        cache: KVCache | None = None,
+    ) -> Tensor:
+        x = x + self.self_attn(self.input_layernorm(x), cos, sin, cache)
         return x + self.mlp(self.post_attention_layernorm(x))
 
 
@@ -160,7 +228,9 @@ class LlamaModel(nn.Module):
     def __init__(self, cfg: LlamaConfig) -> None:
         super().__init__()
         self.embed_tokens = nn.Embedding(cfg.vocab_size, cfg.hidden_size)
-        self.layers = nn.ModuleList(DecoderLayer(cfg) for _ in range(cfg.num_hidden_layers))
+        self.layers = nn.ModuleList(
+            DecoderLayer(cfg, layer_index) for layer_index in range(cfg.num_hidden_layers)
+        )
         self.norm = nn.RMSNorm(cfg.hidden_size, eps=cfg.rms_norm_eps)
         self.register_buffer(
             "inv_freq",
@@ -168,11 +238,18 @@ class LlamaModel(nn.Module):
             persistent=False,
         )
 
-    def forward(self, input_ids: Tensor, positions: Tensor) -> Tensor:
+    def forward(
+        self,
+        input_ids: Tensor,
+        positions: Tensor,
+        cache: KVCache | None = None,
+    ) -> Tensor:
         x = self.embed_tokens(input_ids)  # [B, T, D]
         cos, sin = rope_cos_sin(self.inv_freq, positions, x.dtype)
         for layer in self.layers:
-            x = layer(x, cos, sin)
+            x = layer(x, cos, sin, cache)
+        if cache is not None:
+            cache.length += input_ids.shape[1]
         return self.norm(x)
 
 
@@ -187,12 +264,20 @@ class LlamaForCausalLM(nn.Module):
         if cfg.tie_word_embeddings:  # the 1B shares its output projection with the embedding
             self.lm_head.weight = self.model.embed_tokens.weight
 
-    def forward(self, input_ids: Tensor, positions: Tensor | None = None) -> Tensor:
-        """input_ids: [B, T] token ids. Returns logits [B, T, V] in the model dtype.
-
-        `positions` defaults to 0..T-1; a KV cache will pass an offset later.
-        """
+    def forward(
+        self,
+        input_ids: Tensor,
+        positions: Tensor | None = None,
+        cache: KVCache | None = None,
+    ) -> Tensor:
+        """input_ids: [B, T] token ids. Returns logits [B, T, V] in the model dtype."""
+        if cache is not None:
+            if input_ids.shape[0] != cache.batch_size:
+                raise ValueError("input batch size does not match the KV cache")
+            if cache.length and input_ids.shape[1] != 1:
+                raise ValueError("cached decode accepts exactly one new token per call")
+        start = cache.length if cache is not None else 0
         if positions is None:
-            positions = torch.arange(input_ids.shape[1], device=input_ids.device)
-        hidden = self.model(input_ids, positions)
+            positions = torch.arange(start, start + input_ids.shape[1], device=input_ids.device)
+        hidden = self.model(input_ids, positions, cache)
         return self.lm_head(hidden)

@@ -15,13 +15,7 @@ def greedy_generate(
     eos_token_ids: Collection[int] = (),
     on_token: Callable[[], None] | None = None,
 ) -> Tensor:
-    """Generate tokens by repeatedly choosing the highest next-token logit.
-
-    ``forward`` receives the entire growing sequence and returns logits shaped
-    ``[1, sequence, vocabulary]``. The returned tensor contains both the input
-    and generated tokens. This deliberately performs full recomputation on
-    every step; later experiments can introduce a KV cache.
-    """
+    """Generate tokens by repeatedly choosing the highest next-token logit."""
     if input_ids.ndim != 2 or input_ids.shape[0] != 1:
         raise ValueError("greedy generation currently requires input_ids shaped [1, sequence]")
     if input_ids.shape[1] == 0:
@@ -35,7 +29,7 @@ def greedy_generate(
     with torch.inference_mode():
         for _ in range(max_new_tokens):
             logits = forward(tokens)
-            if logits.ndim != 3 or logits.shape[:2] != tokens.shape:
+            if logits.ndim != 3 or logits.shape[0] != 1 or logits.shape[1] < 1:
                 raise ValueError("forward must return logits shaped [1, sequence, vocabulary]")
             next_token = logits[:, -1].argmax(dim=-1, keepdim=True)
             tokens = torch.cat((tokens, next_token), dim=1)

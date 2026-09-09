@@ -59,3 +59,16 @@ def test_generation_calls_hook_after_each_token() -> None:
 
     assert output.tolist() == [[1, 2, 3, 4, 5, 6]]
     assert boundaries == [0, 1, 2]
+
+
+def test_generation_accepts_logits_for_only_the_latest_token() -> None:
+    next_tokens = iter((4, 5, 6))
+
+    def forward(token_ids: torch.Tensor) -> torch.Tensor:
+        logits = torch.zeros(1, 1, 8)
+        logits[0, -1, next(next_tokens)] = 1
+        return logits
+
+    output = greedy_generate(forward, torch.tensor([[1, 2, 3]]), max_new_tokens=3)
+
+    assert output.tolist() == [[1, 2, 3, 4, 5, 6]]
