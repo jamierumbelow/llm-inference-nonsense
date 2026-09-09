@@ -9,7 +9,10 @@ from torch import Tensor, nn
 
 from harness.profiles import ModelProfile
 
-EXPERIMENTS = {"e00_baseline": "e00_baseline"}
+EXPERIMENTS = {
+    "e00_baseline": "e00_baseline",
+    "e01_kv_cache": "e01_kv_cache",
+}
 
 
 class Experiment(Protocol):

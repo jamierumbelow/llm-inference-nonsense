@@ -6,6 +6,7 @@ requires-python = ">=3.13"
 # Workspace members, so a plain `uv sync` installs all of them editable.
 dependencies = [
     "e00-baseline",
+    "e01-kv-cache",
     "harness",
     "modal>=1.5.5",
     "runner",
@@ -25,6 +26,7 @@ members = ["packages/*", "experiments/*"]
 
 [tool.uv.sources]
 e00-baseline = { workspace = true }
+e01-kv-cache = { workspace = true }
 harness = { workspace = true }
 runner = { workspace = true }
 
@@ -48,13 +50,18 @@ select = [
 "notebooks/*" = ["B018"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["e00_baseline", "harness", "runner", "bench", "analysis"]
+known-first-party = ["e00_baseline", "e01_kv_cache", "harness", "runner", "bench", "analysis"]
 
 [tool.pyright]
 pythonVersion = "3.13"
 typeCheckingMode = "basic"
 include = ["packages", "experiments", "tools"]
-extraPaths = ["experiments/e00_baseline/src", "packages/harness/src", "packages/runner/src"]
+extraPaths = [
+    "experiments/e00_baseline/src",
+    "experiments/e01_kv_cache/src",
+    "packages/harness/src",
+    "packages/runner/src",
+]
 venvPath = "."
 venv = ".venv"
 
