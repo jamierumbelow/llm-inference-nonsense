@@ -486,4 +486,15 @@ decode
     - KV caching makes short decoding about 1.3× faster
     - KV caching makes long decoding about 1.4× faster
 
+22:31 - a productive evening. the runs are becoming more reliable, KV caching works – who'd have thought it, eh? - and we're in a good place to continue improving performance over the following weeks. a few things I've learned / questions I still have:
+* why does removing so much computation only produce a 1.3-1.4x speedup?
+* cached decoding processes one new token instead of roughly 128–255 positions, yet latency falls only from 32–36 ms to about 24ms. where's the remaining 24ms coming from? we should do some profiling soon to get a better idea
+* there's a remarkably high variation between runs, which suggests where we're running it is changing considerably (ie the execution environment is having a big impact on runtime, which seems a priori plausible)
+* we're still running on a fairly short prompt relative to context window. this is my fault; I should have been more forethoughtful about the benchmarking workloads. something to improve soon. eg it'd be useful to see when cached token latency stops being flat and starts to creep up.
+* how expensive is cache construction?
+* why does prefill become less _efficient_ (latency as a function of prompt length) as prompt length grows?
+* what variations are there to the design of the cache? future experiments may mean we'll need to change the various assumptions built into the current cache
+
+I'll look at these and much more over the next few experiments, and it might be helpful to start graphing the outputs so I can think about it visually. but, for tonight, I'm done.
+
 </details>
