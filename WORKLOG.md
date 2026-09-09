@@ -410,4 +410,80 @@ and the full benchmark:
 $ uv run tools/benchmark.py --experiment e01_kv_cache --runs 3
 ```
 
+21:41 - forgot to flag that the benchmark run from yesterday gave us an A100 80GB for the second run, which is peculiar. the only thing I can think of is that Modal ran out of available A100 40G chips and automatically upgraded us to the 80GB version, or else they have a bug. nothing explicit in the logs, and nothing in the Modal dashboard. so I'll:
+* email Modal and ask them whether they know what happened
+* add a hardware guard to the benchmark runner so we can catch it again
+* rerun the benchmarking
+
+22:20 - benchmarking rerun is cleaner:
+
+- Prefill medians:
+    - 128 tokens: 26.99 ms
+    - 512 tokens: 66.19 ms
+    - 1,024 tokens: 150.36 ms
+
+- Short decode, 32 generated tokens:
+    - Total latency: 1.026 seconds
+    - Time per token: 32.26 ms
+    - Throughput: 31.18 tokens/second
+    - Cost: $18.70 per million tokens
+
+- Long decode, 128 generated tokens:
+    - Total latency: 4.378 seconds
+    - Time per token: 34.26 ms
+    - Throughput: 29.24 tokens/second
+    - Cost: $19.94 per million tokens
+
+- Decode becomes slower as the sequence grows:
+    - Short decode: approximately 31.98 → 32.65 ms/token
+    - Long decode: approximately 32.18 → 36.33 ms/token
+
+- Peak memory above the loaded model:
+    - Short decode: 86.9 MiB
+    - Long decode: 134.7 MiB
+
+- All three runs generated identical outputs.
+- The rerun was unusually consistent:
+    - Short total latency varied by only 0.3% between jobs.
+    - Long total latency varied by only 0.6%.
+    - Medium and long prefill varied by less than 0.3%.
+
+- Each complete GPU benchmark took approximately 98.6 seconds, cost about $0.0575, and took about 113 seconds end to end.
+
+22:05 - e01_kv_cache results:
+
+- generated token IDs matched e00 exactly for both decode workloads
+- prefill remains essentially unchanged, as we'd hope:
+    - Short: 2.5% slower
+    - Medium: 0.3% slower
+    - Long: 0.1% slower
+
+- Time to first token is slightly slower with the cache:
+    - Short decode: 27.51 → 29.13 ms, up 5.9%.
+    - Long decode: 27.95 → 28.89 ms, up 3.4%.
+
+- Short decode improves:
+    - Total latency: 1.026 → 0.782 seconds, down 23.8%.
+    - Time per token: 32.26 → 24.33 ms, down 24.6%.
+    - Throughput: 31.18 → 40.90 tokens/second, up 31.2%.
+    - Cost: $18.70 → $14.25 per million tokens, down 23.8%.
+    - Memory above model: 86.9 → 68.3 MiB, down 21.5%.
+
+- Long decode improves more:
+    - Total latency: 4.378 → 3.094 seconds, down 29.3%.
+    - Time per token: 34.26 → 24.14 ms, down 29.6%.
+    - Throughput: 29.24 → 41.37 tokens/second, up 41.5%.
+    - Cost: $19.94 → $14.09 per million tokens, down 29.3%.
+    - Memory above model: 134.7 → 79.6 MiB, down 40.9%.
+
+- The benefit grows with longer generation because e00 repeatedly processes an increasingly long sequence, while e01 continues
+processing one new token per step.
+
+- e01’s per-token latency stays flat at approximately 24 ms, whereas e00 rises from approximately 32 to 36 ms during long
+decode
+
+- Therefore:
+    - KV caching makes short decoding about 1.3× faster
+    - KV caching makes long decoding about 1.4× faster
+
 </details>

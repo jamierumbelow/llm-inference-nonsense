@@ -13,7 +13,12 @@ from harness.profiles import get_profile
 from runner.benchmark_workloads import STANDARD_BENCHMARK, BenchmarkWorkload
 from runner.config import DTYPES
 from runner.experiments import get_experiment
-from runner.gpu_specs import GpuSpec, actual_gpu_hardware, get_gpu_spec
+from runner.gpu_specs import (
+    GpuSpec,
+    actual_gpu_hardware,
+    get_gpu_spec,
+    validate_gpu_hardware,
+)
 from runner.measurements import (
     MEASURED_RUNS,
     STABILIZATION_RUNS,
@@ -37,9 +42,11 @@ def benchmark(experiment_name: str, device: str = "cuda") -> dict:
     if device == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for the standard benchmark")
 
+    gpu_spec = get_gpu_spec(suite.gpu)
+    actual_hardware = actual_gpu_hardware(device)
+    validate_gpu_hardware(gpu_spec, actual_hardware)
     experiment = get_experiment(experiment_name)
     profile = get_profile(suite.model)
-    gpu_spec = get_gpu_spec(suite.gpu)
     path = profile.snapshot_path()
     tokenizer, tokenizer_loading_ms = measure_once(
         lambda: AutoTokenizer.from_pretrained(
@@ -147,7 +154,7 @@ def benchmark(experiment_name: str, device: str = "cuda") -> dict:
         "cudnn_version": torch.backends.cudnn.version() if device == "cuda" else None,
         "hardware": {
             "published": gpu_spec.report(),
-            "actual": actual_gpu_hardware(device),
+            "actual": actual_hardware,
         },
         "runtime": {
             "batch_size": suite.batch_size,

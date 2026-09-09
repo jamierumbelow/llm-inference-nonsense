@@ -8,6 +8,7 @@ import torch
 @dataclass(frozen=True, slots=True)
 class GpuSpec:
     modal_name: str
+    device_name: str
     memory_capacity_bytes: int
     memory_bandwidth_bytes_per_second: int
     peak_dense_bf16_flops_per_second: int
@@ -25,6 +26,7 @@ class GpuSpec:
 
 A100_40GB = GpuSpec(
     modal_name="A100-40GB",
+    device_name="NVIDIA A100-SXM4-40GB",
     memory_capacity_bytes=40_000_000_000,
     memory_bandwidth_bytes_per_second=1_555_000_000_000,
     peak_dense_bf16_flops_per_second=312_000_000_000_000,
@@ -59,3 +61,22 @@ def actual_gpu_hardware(device: str) -> dict | None:
         "compute_capability": list(torch.cuda.get_device_capability()),
         "multiprocessor_count": properties.multi_processor_count,
     }
+
+
+def validate_gpu_hardware(spec: GpuSpec, actual: dict | None) -> None:
+    """Refuse to benchmark when Modal supplies different hardware."""
+    if actual is None:
+        return
+
+    actual_name = actual["name"]
+    actual_memory = actual["total_memory_bytes"]
+    memory_difference = abs(actual_memory - spec.memory_capacity_bytes)
+    memory_matches = memory_difference <= spec.memory_capacity_bytes * 0.1
+    if actual_name == spec.device_name and memory_matches:
+        return
+
+    actual_memory_gb = actual_memory / 1_000_000_000
+    raise RuntimeError(
+        f"requested {spec.modal_name}, but CUDA reported {actual_name} "
+        f"with {actual_memory_gb:.1f} GB; refusing to benchmark on different hardware"
+    )
